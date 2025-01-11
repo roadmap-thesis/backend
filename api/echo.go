@@ -15,6 +15,8 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 
 func NewEchoInstance() *echo.Echo {
 	instance := echo.New()
+	instance.HideBanner = true
+	instance.HidePort = true
 	validator := validator.New()
 	instance.Validator = &CustomValidator{validator: validator}
 	return instance

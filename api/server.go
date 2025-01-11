@@ -41,10 +41,7 @@ func (s *Server) Listen(port string) <-chan os.Signal {
 	signal.Notify(exitSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	go func() {
 		log.Info().Msgf("Listening on %s", port)
-		err := s.instance.Start(":" + port)
-		if err != nil {
-			log.Fatal().Err(err).Send()
-		}
+		s.instance.Start(":" + port)
 	}()
 
 	return exitSignal
