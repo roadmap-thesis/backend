@@ -20,7 +20,7 @@ type RegisterOutput struct {
 }
 
 func (b *Backend) Register(ctx context.Context, input RegisterInput) (RegisterOutput, error) {
-	output := RegisterOutput{Created: false}
+	var output RegisterOutput
 
 	result, err := b.registerEmail(ctx, input)
 	if err != nil {
