@@ -22,7 +22,7 @@ func init() {
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	log.Logger = log.With().Caller().Stack().Logger()
-	if os.Getenv("APP_ENV") == "dev" {
+	if os.Getenv("APP_ENV") != "production" {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}

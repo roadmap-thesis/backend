@@ -1,7 +1,6 @@
 package api
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
@@ -15,7 +14,7 @@ func (s *Server) setupMiddlewares() {
 		LogError:    true,
 		HandleError: true,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			if config.AppEnv() != "production" && v.Error == nil {
+			if v.Error == nil {
 				log.Info().
 					Str("uri", v.URI).
 					Int("status", v.Status).
