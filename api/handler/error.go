@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/HotPotatoC/roadmap_gen/api/res"
-	"github.com/HotPotatoC/roadmap_gen/errors"
+	"github.com/HotPotatoC/roadmap_gen/internal/errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )

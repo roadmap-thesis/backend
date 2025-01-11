@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/HotPotatoC/roadmap_gen/domain/entity"
-	"github.com/HotPotatoC/roadmap_gen/errors"
+	"github.com/HotPotatoC/roadmap_gen/internal/errors"
 	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
 )
 
