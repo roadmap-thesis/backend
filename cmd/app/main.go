@@ -2,37 +2,24 @@ package main
 
 import (
 	"context"
-	"os"
 
 	"github.com/HotPotatoC/roadmap_gen/api"
 	"github.com/HotPotatoC/roadmap_gen/backend"
 	"github.com/HotPotatoC/roadmap_gen/clients"
 	"github.com/HotPotatoC/roadmap_gen/config"
+	"github.com/HotPotatoC/roadmap_gen/internal/logger"
 	"github.com/HotPotatoC/roadmap_gen/repository"
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
 )
-
-func init() {
-	// Setup logger
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	log.Logger = log.With().Caller().Stack().Logger()
-	if os.Getenv("APP_ENV") != "production" {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	}
-
-	log.Info().Msg("Bootstrapping config and clients")
-	config.Init()
-}
 
 func main() {
 	ctx := context.Background()
+
+	config.Init()
+	logger.Init()
+
+	log.Info().Msg("Initialized config and clients")
 
 	clients, err := clients.New(ctx)
 	if err != nil {
