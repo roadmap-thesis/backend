@@ -1,12 +1,14 @@
 package handler
 
 import (
-	"net/http"
-
-	"github.com/HotPotatoC/roadmap_gen/api/response"
+	"github.com/HotPotatoC/roadmap_gen/api/res"
 	"github.com/HotPotatoC/roadmap_gen/backend"
 	"github.com/labstack/echo/v4"
 )
+
+type RegisterOutput struct {
+	Token string `json:"token"`
+}
 
 func (h *Handler) Register(c echo.Context) error {
 	var input backend.RegisterInput
@@ -19,11 +21,12 @@ func (h *Handler) Register(c echo.Context) error {
 		return err
 	}
 
-	err := h.backend.Register(c.Request().Context(), input)
+	token, err := h.backend.Register(c.Request().Context(), input)
 	if err != nil {
 		return err
 	}
 
-	res := response.NewSuccessResponse("Successfully registered", nil)
-	return c.JSON(http.StatusOK, res)
+	return res.Created(c, "Successfully registered", RegisterOutput{
+		Token: token,
+	})
 }

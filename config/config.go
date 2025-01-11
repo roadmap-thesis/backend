@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 // Config is the global config for the application
 type Config struct {
 	AppName string
@@ -7,6 +9,9 @@ type Config struct {
 	Port    string
 
 	DatabaseURL string
+
+	JWTSecretKey       string
+	JWTSecretExpiresIn time.Duration
 
 	OpenAiAPIKey string
 	OpenAiModel  string
@@ -22,6 +27,9 @@ func Init() {
 		Port:    LookupEnv("PORT", "5000"),
 
 		DatabaseURL: LookupEnv("DATABASE_URL", ""),
+
+		JWTSecretKey:       LookupEnv("JWT_SECRET_KEY", "secret"),
+		JWTSecretExpiresIn: LookupEnv("JWT_SECRET_EXPIRES_IN", time.Hour*24),
 
 		OpenAiAPIKey: LookupEnv("OPENAI_API_KEY", ""),
 		OpenAiModel:  LookupEnv("OPENAI_MODEL", "gpt-4o-mini"),
@@ -39,3 +47,6 @@ func DatabaseURL() string { return config.DatabaseURL }
 
 func OpenAiAPIKey() string { return config.OpenAiAPIKey }
 func OpenAiModel() string  { return config.OpenAiModel }
+
+func JWTSecretKey() string              { return config.JWTSecretKey }
+func JWTSecretExpiresIn() time.Duration { return config.JWTSecretExpiresIn }

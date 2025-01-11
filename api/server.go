@@ -22,16 +22,16 @@ type Server struct {
 func New(backend *backend.Backend) *Server {
 	echoInstance := NewEchoInstance()
 
-	handler := handler.New(backend)
+	api := handler.New(backend)
 	srv := &Server{
 		instance: echoInstance,
 		backend:  backend,
-		api:      handler,
+		api:      api,
 	}
 
 	srv.setupMiddlewares()
 	srv.setupRoutes()
-	srv.instance.HTTPErrorHandler = handler.ErrorHandler
+	srv.instance.HTTPErrorHandler = api.ErrorHandler
 
 	return srv
 }

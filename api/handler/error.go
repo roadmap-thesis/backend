@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/HotPotatoC/roadmap_gen/api/response"
+	"github.com/HotPotatoC/roadmap_gen/api/res"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
@@ -36,13 +36,11 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 	if c.Request().Method == http.MethodHead {
 		err = c.NoContent(code)
 	} else {
-		var res response.Response
 		if len(validationErrMsgs) > 0 {
-			res = response.NewErrorResponse("validation error", validationErrMsgs)
+			err = res.Error(c, code, "validation error", validationErrMsgs)
 		} else {
-			res = response.NewErrorResponse(err.Error(), nil)
+			err = res.Error(c, code, err.Error(), nil)
 		}
-		err = c.JSON(code, res)
 	}
 }
 
