@@ -14,27 +14,28 @@ type Identity struct {
 	ID       int
 	Name     string
 	Email    string
-	Password *object.Password
+	Password object.Password
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 func NewIdentity(name, email, plainPassword string) (*Identity, error) {
-	password := object.NewPassword()
+	password := object.Password(plainPassword)
 
 	if err := password.Validate(plainPassword); err != nil {
 		return nil, err
 	}
 
-	if err := password.GenerateHash(plainPassword); err != nil {
+	hash, err := password.GenerateHash(plainPassword)
+	if err != nil {
 		return nil, err
 	}
 
 	identity := &Identity{
 		Name:     name,
 		Email:    email,
-		Password: password,
+		Password: hash,
 	}
 
 	return identity, nil

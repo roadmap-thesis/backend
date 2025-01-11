@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/HotPotatoC/roadmap_gen/api/res"
 	"github.com/HotPotatoC/roadmap_gen/backend"
+	"github.com/HotPotatoC/roadmap_gen/errors"
 	"github.com/labstack/echo/v4"
 )
 
@@ -14,19 +15,25 @@ func (h *Handler) Register(c echo.Context) error {
 	var input backend.RegisterInput
 
 	if err := c.Bind(&input); err != nil {
-		return ErrInvalidData
+		return errors.InvalidData()
 	}
 
 	if err := c.Validate(&input); err != nil {
 		return err
 	}
 
-	token, err := h.backend.Register(c.Request().Context(), input)
+	output, err := h.backend.Register(c.Request().Context(), input)
 	if err != nil {
 		return err
 	}
 
-	return res.Created(c, "Successfully registered", RegisterOutput{
-		Token: token,
-	})
+	if output.Created {
+		return res.Created(c, "Successfully registered.", RegisterOutput{
+			Token: output.Token,
+		})
+	} else {
+		return res.OK(c, "Successfully logged in.", RegisterOutput{
+			Token: output.Token,
+		})
+	}
 }

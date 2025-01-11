@@ -4,7 +4,7 @@ import (
 	"errors"
 	"unicode"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/crypto"
+	"github.com/HotPotatoC/roadmap_gen/internal/bcrypt"
 )
 
 var (
@@ -12,21 +12,8 @@ var (
 	ErrPasswordInvalidCharacters = errors.New("err password invalid characters")
 )
 
-// Password is your average user's secret password
-type Password struct {
-	hash   string
-	crypto crypto.Crypto
-}
-
-func NewPassword() *Password {
-	return &Password{
-		crypto: crypto.NewBcrypt(10),
-	}
-}
-
-func NewPasswordFrom(hash string) *Password {
-	return &Password{hash: hash}
-}
+// Password can be plain/hashed
+type Password string
 
 // Validate validates a plain password
 func (p *Password) Validate(plain string) error {
@@ -48,18 +35,20 @@ func (p *Password) validateCharacters(plain string) bool {
 }
 
 // GenerateHash generates a hash for the password
-func (p *Password) GenerateHash(plain string) error {
-	hash, err := p.crypto.Hash(plain)
+func (p Password) GenerateHash(plain string) (Password, error) {
+	hash, err := bcrypt.Hash(plain)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	p.hash = hash
-
-	return nil
+	return Password(hash), nil
 }
 
 // Compare compares the password with the hash
-func (p *Password) Compare(plain string) bool {
-	return p.crypto.Compare(p.hash, plain)
+func (p Password) Compare(plain string) bool {
+	return bcrypt.Compare(string(p), plain)
+}
+
+func (p Password) String() string {
+	return string(p)
 }

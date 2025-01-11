@@ -5,16 +5,19 @@ import (
 	"time"
 
 	"github.com/HotPotatoC/roadmap_gen/domain/entity"
+	"github.com/rs/zerolog/log"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/im"
 )
 
 func (r *Repository) IdentityCreate(ctx context.Context, input *entity.Identity) (*entity.Identity, error) {
 	query, args := psql.Insert(
-		im.Into(entity.IdentityTable, "name", "email", "password", "created_at", "updated_at"),
+		im.Into(entity.IdentityTable, "name", "email", "password"),
 		im.Values(psql.Arg(input.Name, input.Email, input.Password)),
-		im.Returning(psql.Arg("id", "name", "email", "created_at", "updated_at")),
+		im.Returning("id", "name", "email", "created_at", "updated_at"),
 	).MustBuild(ctx)
+
+	log.Info().Msg(query)
 
 	var id int
 	var name, email string

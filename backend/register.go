@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/HotPotatoC/roadmap_gen/domain/entity"
+	"github.com/HotPotatoC/roadmap_gen/errors"
 	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
 )
 
@@ -13,24 +14,64 @@ type RegisterInput struct {
 	Password string `json:"password" validate:"required"`
 }
 
-func (b *Backend) Register(ctx context.Context, input RegisterInput) (string, error) {
+type RegisterOutput struct {
+	Created bool
+	Token   string
+}
+
+func (b *Backend) Register(ctx context.Context, input RegisterInput) (RegisterOutput, error) {
+	output := RegisterOutput{Created: false}
+
+	result, err := b.registerEmail(ctx, input)
+	if err != nil {
+		return output, err
+	}
+
+	token, err := jwt.GenerateJWT(map[string]any{
+		"user_id":    result.id,
+		"user_email": result.email,
+	})
+	if err != nil {
+		return output, err
+	}
+
+	output.Created = result.created
+	output.Token = token
+	return output, nil
+}
+
+type registerEmailOutput struct {
+	id      int
+	email   string
+	created bool
+}
+
+func (b *Backend) registerEmail(ctx context.Context, input RegisterInput) (*registerEmailOutput, error) {
+	existingIdentity, err := b.repository.IdentityGetByEmail(ctx, input.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	// sign in if identity already exists
+	if existingIdentity != nil {
+		matched := existingIdentity.Password.Compare(input.Password)
+
+		if !matched {
+			return nil, errors.InvalidCredentials()
+		}
+
+		return &registerEmailOutput{id: existingIdentity.ID, email: existingIdentity.Email}, nil
+	}
+
 	identity, err := entity.NewIdentity(input.Name, input.Email, input.Password)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	createdIdentity, err := b.repository.IdentityCreate(ctx, identity)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	token, err := jwt.GenerateJWT(map[string]any{
-		"user_id":    createdIdentity.ID,
-		"user_email": createdIdentity.Email,
-	})
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return &registerEmailOutput{id: createdIdentity.ID, email: createdIdentity.Email, created: true}, nil
 }

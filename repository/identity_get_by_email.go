@@ -2,10 +2,12 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/HotPotatoC/roadmap_gen/domain/entity"
 	"github.com/HotPotatoC/roadmap_gen/domain/object"
+	"github.com/jackc/pgx/v5"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/sm"
 )
@@ -22,6 +24,9 @@ func (r *Repository) IdentityGetByEmail(ctx context.Context, filter string) (*en
 	var createdAt, updatedAt time.Time
 	err := r.db.QueryRow(ctx, query, args...).Scan(&id, &name, &email, &password, &createdAt, &updatedAt)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -29,7 +34,7 @@ func (r *Repository) IdentityGetByEmail(ctx context.Context, filter string) (*en
 		ID:        id,
 		Name:      name,
 		Email:     email,
-		Password:  object.NewPasswordFrom(password),
+		Password:  object.Password(password),
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}

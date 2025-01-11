@@ -4,12 +4,9 @@ import (
 	"net/http"
 
 	"github.com/HotPotatoC/roadmap_gen/api/res"
+	"github.com/HotPotatoC/roadmap_gen/errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-)
-
-var (
-	ErrInvalidData = echo.NewHTTPError(http.StatusBadRequest, "Invalid Data")
 )
 
 func (h *Handler) ErrorHandler(err error, c echo.Context) {
@@ -18,9 +15,9 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 	}
 
 	code := http.StatusInternalServerError
-	he, ok := err.(*echo.HTTPError)
+	he, ok := err.(*errors.AppError)
 	if ok {
-		code = he.Code
+		code = he.Code()
 	}
 
 	var validationErrMsgs []validationErrMsg

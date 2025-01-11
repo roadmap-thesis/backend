@@ -11,12 +11,14 @@ import (
 
 func GenerateJWT(claims map[string]any) (string, error) {
 	claims["exp"] = time.Now().Add(config.JWTSecretExpiresIn()).Unix()
-	claims["iat"] = time.Now()
+	claims["iat"] = time.Now().Unix()
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(claims))
 	tokenStr, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return "", err
 	}
+
 	return tokenStr, nil
 }
 
