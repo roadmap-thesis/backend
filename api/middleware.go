@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/HotPotatoC/roadmap_gen/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
@@ -18,14 +19,14 @@ func (s *Server) setupMiddlewares() {
 				log.Debug().
 					Str("uri", v.URI).
 					Int("status", v.Status).
-					Msg("request")
+					Send()
 			} else {
-				if v.Status >= 500 {
+				if config.AppEnv() != "production" || v.Status >= 500 {
 					log.Error().
 						Err(v.Error).
 						Str("uri", v.URI).
 						Int("status", v.Status).
-						Msg("request error")
+						Send()
 				}
 			}
 			return nil
