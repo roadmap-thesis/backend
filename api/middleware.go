@@ -15,16 +15,18 @@ func (s *Server) setupMiddlewares() {
 		HandleError: true,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
 			if v.Error == nil {
-				log.Info().
+				log.Debug().
 					Str("uri", v.URI).
 					Int("status", v.Status).
 					Msg("request")
 			} else {
-				log.Error().
-					Err(v.Error).
-					Str("uri", v.URI).
-					Int("status", v.Status).
-					Msg("request error")
+				if v.Status >= 500 {
+					log.Error().
+						Err(v.Error).
+						Str("uri", v.URI).
+						Int("status", v.Status).
+						Msg("request error")
+				}
 			}
 			return nil
 		},
