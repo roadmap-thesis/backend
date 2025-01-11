@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/HotPotatoC/roadmap_gen/api/res"
 	"github.com/HotPotatoC/roadmap_gen/errors"
@@ -34,7 +35,7 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 		err = c.NoContent(code)
 	} else {
 		if len(validationErrMsgs) > 0 {
-			err = res.Error(c, code, "validation error", validationErrMsgs)
+			err = res.Error(c, code, "Validation failed.", validationErrMsgs)
 		} else {
 			err = res.Error(c, code, err.Error(), nil)
 		}
@@ -48,7 +49,7 @@ type validationErrMsg struct {
 
 func getValidationErrMsg(err validator.FieldError) validationErrMsg {
 	errMsg := validationErrMsg{
-		Field: err.Field(),
+		Field: strings.ToLower(err.Field()),
 	}
 
 	errMsg.Message = map[string]string{
