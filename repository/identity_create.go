@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/HotPotatoC/roadmap_gen/domain/entity"
-	"github.com/rs/zerolog/log"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/im"
 )
@@ -16,8 +15,6 @@ func (r *Repository) IdentityCreate(ctx context.Context, input *entity.Identity)
 		im.Values(psql.Arg(input.Name, input.Email, input.Password)),
 		im.Returning("id", "name", "email", "created_at", "updated_at"),
 	).MustBuild(ctx)
-
-	log.Info().Msg(query)
 
 	var id int
 	var name, email string
