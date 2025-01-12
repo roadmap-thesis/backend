@@ -9,7 +9,7 @@ type Repository struct {
 	Account domain.AccountRepository
 }
 
-func New(db database.PsqlConnection) *Repository {
+func New(db database.Connection) *Repository {
 	return &Repository{
 		Account: NewAccountRepository(db),
 	}

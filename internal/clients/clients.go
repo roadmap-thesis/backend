@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/HotPotatoC/roadmap_gen/internal/config"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/HotPotatoC/roadmap_gen/internal/database"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
@@ -12,7 +12,7 @@ import (
 
 type Clients struct {
 	OpenAI *OpenAI
-	DB     *pgxpool.Pool
+	DB     database.Connection
 }
 
 func New(ctx context.Context) (*Clients, error) {
@@ -24,7 +24,7 @@ func New(ctx context.Context) (*Clients, error) {
 
 	group.Go(func() error {
 		var err error
-		c.DB, err = NewPostgreSQLClient(ctx, config.DatabaseURL())
+		c.DB, err = database.New(ctx, config.DatabaseURL())
 		if err != nil {
 			return errors.Wrap(err, "initializing postgresql")
 		}

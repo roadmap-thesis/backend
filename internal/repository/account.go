@@ -15,22 +15,13 @@ import (
 )
 
 type accountRepository struct {
-	db database.PsqlConnection
-
-	manager *transactionManager
+	db database.Connection
 }
 
-func NewAccountRepository(db database.PsqlConnection) domain.AccountRepository {
-	manager := newTransactionManager(db)
+func NewAccountRepository(db database.Connection) domain.AccountRepository {
 	return &accountRepository{
-		db:      db,
-		manager: manager,
+		db: db,
 	}
-}
-
-func (r *accountRepository) WithTx(db database.PsqlConnection) domain.AccountRepository {
-	r.db = db
-	return r
 }
 
 func (r *accountRepository) Get(ctx context.Context, col string, filter any) (*domain.Account, error) {
@@ -83,7 +74,7 @@ func (r *accountRepository) Create(ctx context.Context, input *domain.Account) (
 	var name, email string
 	var createdAt, updatedAt time.Time
 
-	err := r.manager.WithTransaction(ctx, func(ctx context.Context, tx pgx.Tx) error {
+	err := r.db.InTx(ctx, pgx.ReadCommitted, func(tx pgx.Tx) error {
 		return tx.QueryRow(ctx, query, args...).Scan(&id, &name, &email, &createdAt, &updatedAt)
 	})
 	if err != nil {
