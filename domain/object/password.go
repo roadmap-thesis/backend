@@ -34,8 +34,8 @@ func (p *Password) validateCharacters(plain string) bool {
 	return true
 }
 
-// GenerateHash generates a hash for the password
-func (p Password) GenerateHash(plain string) (Password, error) {
+// Hash generates a hash for the password
+func (p Password) Hash(plain string) (Password, error) {
 	hash, err := bcrypt.Hash(plain)
 	if err != nil {
 		return "", err

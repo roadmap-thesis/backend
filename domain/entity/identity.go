@@ -27,7 +27,7 @@ func NewIdentity(name, email, plainPassword string) (*Identity, error) {
 		return nil, err
 	}
 
-	hash, err := password.GenerateHash(plainPassword)
+	hash, err := password.Hash(plainPassword)
 	if err != nil {
 		return nil, err
 	}
