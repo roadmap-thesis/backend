@@ -16,10 +16,16 @@ import (
 
 type accountRepository struct {
 	db database.PsqlConnection
+
+	manager *transactionManager
 }
 
 func NewAccountRepository(db database.PsqlConnection) domain.AccountRepository {
-	return &accountRepository{db: db}
+	manager := newTransactionManager(db)
+	return &accountRepository{
+		db:      db,
+		manager: manager,
+	}
 }
 
 func (r *accountRepository) WithTx(db database.PsqlConnection) domain.AccountRepository {
@@ -76,7 +82,10 @@ func (r *accountRepository) Create(ctx context.Context, input *domain.Account) (
 	var id int
 	var name, email string
 	var createdAt, updatedAt time.Time
-	err := r.db.QueryRow(ctx, query, args...).Scan(&id, &name, &email, &createdAt, &updatedAt)
+
+	err := r.manager.WithTransaction(ctx, func(ctx context.Context, tx pgx.Tx) error {
+		return tx.QueryRow(ctx, query, args...).Scan(&id, &name, &email, &createdAt, &updatedAt)
+	})
 	if err != nil {
 		return nil, err
 	}

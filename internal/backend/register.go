@@ -6,7 +6,6 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/auth"
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain"
-	"github.com/jackc/pgx/v5"
 )
 
 type RegisterInput struct {
@@ -45,38 +44,31 @@ type registerEmailOutput struct {
 }
 
 func (b *backend) registerEmail(ctx context.Context, input RegisterInput) (*registerEmailOutput, error) {
-	var output *registerEmailOutput
-	err := b.provider.Transaction.Execute(ctx, func(ctx context.Context, tx pgx.Tx) error {
-		existingAccount, err := b.repository.Account.WithTx(tx).GetByEmail(ctx, input.Email)
-		if err != nil {
-			return err
+	existingAccount, err := b.repository.Account.GetByEmail(ctx, input.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	// sign in if account already exists
+	if existingAccount != nil {
+		matched := existingAccount.CheckPassword(input.Password)
+
+		if !matched {
+			return nil, commonerrors.InvalidCredentials()
 		}
 
-		// sign in if account already exists
-		if existingAccount != nil {
-			matched := existingAccount.CheckPassword(input.Password)
+		return &registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}, nil
+	}
 
-			if !matched {
-				return commonerrors.InvalidCredentials()
-			}
+	account, err := domain.NewAccount(input.Name, input.Email, input.Password)
+	if err != nil {
+		return nil, err
+	}
 
-			output = &registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}
-			return nil
-		}
+	createdAccount, err := b.repository.Account.Create(ctx, account)
+	if err != nil {
+		return nil, err
+	}
 
-		account, err := domain.NewAccount(input.Name, input.Email, input.Password)
-		if err != nil {
-			return err
-		}
-
-		createdAccount, err := b.repository.Account.WithTx(tx).Create(ctx, account)
-		if err != nil {
-			return err
-		}
-
-		output = &registerEmailOutput{id: createdAccount.ID, email: createdAccount.Email, created: true}
-		return nil
-	})
-
-	return output, err
+	return &registerEmailOutput{id: createdAccount.ID, email: createdAccount.Email, created: true}, err
 }

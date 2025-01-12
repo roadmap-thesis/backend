@@ -8,7 +8,6 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/clients"
 	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/HotPotatoC/roadmap_gen/internal/logger"
-	"github.com/HotPotatoC/roadmap_gen/internal/provider"
 	"github.com/HotPotatoC/roadmap_gen/internal/repository"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/zerolog/log"
@@ -28,9 +27,8 @@ func main() {
 	}
 	defer clients.Close()
 
-	provider := provider.New(clients)
 	repository := repository.New(clients.DB)
-	backend := backend.New(provider, repository)
+	backend := backend.New(repository)
 	server := api.New(backend)
 
 	exit := server.Listen(config.Port())

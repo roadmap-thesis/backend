@@ -3,7 +3,6 @@ package backend
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/provider"
 	"github.com/HotPotatoC/roadmap_gen/internal/repository"
 )
 
@@ -13,14 +12,11 @@ type Backend interface {
 }
 
 type backend struct {
-	provider *provider.Provider
-
 	repository *repository.Repository
 }
 
-func New(provider *provider.Provider, repository *repository.Repository) Backend {
+func New(repository *repository.Repository) Backend {
 	return &backend{
-		provider:   provider,
 		repository: repository,
 	}
 }

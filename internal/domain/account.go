@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/database"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
 )
 
@@ -52,8 +51,6 @@ func (e *Account) UpdateChangelog() {
 }
 
 type AccountRepository interface {
-	database.Transactional[AccountRepository]
-
 	Get(ctx context.Context, col string, filter any) (*Account, error)
 	GetByID(ctx context.Context, filter int) (*Account, error)
 	GetByEmail(ctx context.Context, filter string) (*Account, error)
