@@ -6,6 +6,7 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain/entity"
 	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
+	"github.com/jackc/pgx/v5"
 )
 
 type RegisterInput struct {
@@ -19,7 +20,7 @@ type RegisterOutput struct {
 	Token   string
 }
 
-func (b *Backend) Register(ctx context.Context, input RegisterInput) (RegisterOutput, error) {
+func (b *backend) Register(ctx context.Context, input RegisterInput) (RegisterOutput, error) {
 	var output RegisterOutput
 
 	result, err := b.registerEmail(ctx, input)
@@ -46,32 +47,39 @@ type registerEmailOutput struct {
 	created bool
 }
 
-func (b *Backend) registerEmail(ctx context.Context, input RegisterInput) (*registerEmailOutput, error) {
-	existingIdentity, err := b.repository.IdentityGetByEmail(ctx, input.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	// sign in if identity already exists
-	if existingIdentity != nil {
-		matched := existingIdentity.CheckPassword(input.Password)
-
-		if !matched {
-			return nil, commonerrors.InvalidCredentials()
+func (b *backend) registerEmail(ctx context.Context, input RegisterInput) (*registerEmailOutput, error) {
+	var output *registerEmailOutput
+	err := b.provider.Transaction.Execute(ctx, func(ctx context.Context, tx pgx.Tx) error {
+		existingIdentity, err := b.repository.Identity.WithTx(tx).GetByEmail(ctx, input.Email)
+		if err != nil {
+			return err
 		}
 
-		return &registerEmailOutput{id: existingIdentity.ID, email: existingIdentity.Email}, nil
-	}
+		// sign in if identity already exists
+		if existingIdentity != nil {
+			matched := existingIdentity.CheckPassword(input.Password)
 
-	identity, err := entity.NewIdentity(input.Name, input.Email, input.Password)
-	if err != nil {
-		return nil, err
-	}
+			if !matched {
+				return commonerrors.InvalidCredentials()
+			}
 
-	createdIdentity, err := b.repository.IdentityCreate(ctx, identity)
-	if err != nil {
-		return nil, err
-	}
+			output = &registerEmailOutput{id: existingIdentity.ID, email: existingIdentity.Email}
+			return nil
+		}
 
-	return &registerEmailOutput{id: createdIdentity.ID, email: createdIdentity.Email, created: true}, nil
+		identity, err := entity.NewIdentity(input.Name, input.Email, input.Password)
+		if err != nil {
+			return err
+		}
+
+		createdIdentity, err := b.repository.Identity.WithTx(tx).Create(ctx, identity)
+		if err != nil {
+			return err
+		}
+
+		output = &registerEmailOutput{id: createdIdentity.ID, email: createdIdentity.Email, created: true}
+		return nil
+	})
+
+	return output, err
 }

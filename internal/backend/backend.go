@@ -1,15 +1,25 @@
 package backend
 
 import (
+	"context"
+
+	"github.com/HotPotatoC/roadmap_gen/internal/provider"
 	"github.com/HotPotatoC/roadmap_gen/internal/repository"
 )
 
-type Backend struct {
+type Backend interface {
+	Register(ctx context.Context, input RegisterInput) (RegisterOutput, error)
+}
+
+type backend struct {
+	provider *provider.Provider
+
 	repository *repository.Repository
 }
 
-func New(repository *repository.Repository) *Backend {
-	return &Backend{
+func New(provider *provider.Provider, repository *repository.Repository) Backend {
+	return &backend{
+		provider:   provider,
 		repository: repository,
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -35,4 +36,9 @@ func New(ctx context.Context) (*Clients, error) {
 	}
 
 	return c, nil
+}
+
+func (c *Clients) Close() {
+	c.DB.Close()
+	log.Info().Msg("clients shutdown complete")
 }

@@ -15,11 +15,11 @@ import (
 
 type Server struct {
 	instance *echo.Echo
-	backend  *backend.Backend
+	backend  backend.Backend
 	api      *handler.Handler
 }
 
-func New(backend *backend.Backend) *Server {
+func New(backend backend.Backend) *Server {
 	echoInstance := NewEchoInstance()
 
 	api := handler.New(backend)
@@ -67,7 +67,7 @@ func (s *Server) Shutdown(ctx context.Context, signal os.Signal) {
 		if err != nil {
 			log.Fatal().Err(err).Msg("there was an error shutting down")
 		} else {
-			log.Info().Msg("shutdown complete")
+			log.Info().Msg("server shutdown complete")
 		}
 	}
 }

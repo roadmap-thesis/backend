@@ -9,7 +9,7 @@ import (
 
 // EnvTypes is a generic type for environment variables
 type EnvTypes interface {
-	string | []string | int | time.Duration
+	string | []string | int | int32 | int64 | time.Duration
 }
 
 // LookupEnv is a generic type implementation to search env keys
@@ -28,7 +28,11 @@ func LookupEnv[T EnvTypes](name string, defaultValue T) T {
 		strs := strings.Split(value, ",")
 		result = strs
 	case int:
+	case int64:
 		i, _ := strconv.ParseInt(value, 10, 64)
+		result = int(i)
+	case int32:
+		i, _ := strconv.ParseInt(value, 10, 32)
 		result = int(i)
 	case time.Duration:
 		var err error

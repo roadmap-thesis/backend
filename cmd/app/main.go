@@ -8,6 +8,7 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/clients"
 	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/HotPotatoC/roadmap_gen/internal/logger"
+	"github.com/HotPotatoC/roadmap_gen/internal/provider"
 	"github.com/HotPotatoC/roadmap_gen/internal/repository"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/zerolog/log"
@@ -25,9 +26,11 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to initialize clients")
 	}
+	defer clients.Close()
 
+	provider := provider.New(clients)
 	repository := repository.New(clients.DB)
-	backend := backend.New(repository)
+	backend := backend.New(provider, repository)
 	server := api.New(backend)
 
 	exit := server.Listen(config.Port())

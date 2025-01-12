@@ -1,11 +1,24 @@
 package repository
 
-import "github.com/jackc/pgx/v5/pgxpool"
+import (
+	"context"
 
-type Repository struct {
-	db *pgxpool.Pool
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+)
+
+type DB interface {
+	QueryRow(ctx context.Context, query string, args ...interface{}) pgx.Row
+	Query(context.Context, string, ...interface{}) (pgx.Rows, error)
+	Exec(ctx context.Context, query string, args ...interface{}) (pgconn.CommandTag, error)
 }
 
-func New(db *pgxpool.Pool) *Repository {
-	return &Repository{db: db}
+type Repository struct {
+	Identity *IdentityRepository
+}
+
+func New(db DB) *Repository {
+	return &Repository{
+		Identity: NewIdentityRepository(db),
+	}
 }
