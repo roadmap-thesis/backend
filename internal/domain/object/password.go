@@ -4,7 +4,7 @@ import (
 	"errors"
 	"unicode"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/bcrypt"
+	"github.com/HotPotatoC/roadmap_gen/internal/crypto"
 )
 
 var (
@@ -36,7 +36,7 @@ func (p *Password) validateCharacters(plain string) bool {
 
 // Hash generates a hash for the password
 func (p Password) Hash(plain string) (Password, error) {
-	hash, err := bcrypt.Hash(plain)
+	hash, err := crypto.BcryptHash(plain)
 	if err != nil {
 		return "", err
 	}
@@ -46,7 +46,7 @@ func (p Password) Hash(plain string) (Password, error) {
 
 // Compare compares the password with the hash
 func (p Password) Compare(plain string) bool {
-	return bcrypt.Compare(string(p), plain)
+	return crypto.BcryptCompare(string(p), plain)
 }
 
 func (p Password) String() string {
