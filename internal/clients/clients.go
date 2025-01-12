@@ -3,7 +3,7 @@ package clients
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/config"
+	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"

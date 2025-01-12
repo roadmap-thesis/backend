@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/api"
-	"github.com/HotPotatoC/roadmap_gen/backend"
-	"github.com/HotPotatoC/roadmap_gen/clients"
-	"github.com/HotPotatoC/roadmap_gen/config"
+	"github.com/HotPotatoC/roadmap_gen/internal/api"
+	"github.com/HotPotatoC/roadmap_gen/internal/backend"
+	"github.com/HotPotatoC/roadmap_gen/internal/clients"
+	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/HotPotatoC/roadmap_gen/internal/logger"
-	"github.com/HotPotatoC/roadmap_gen/repository"
+	"github.com/HotPotatoC/roadmap_gen/internal/repository"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/zerolog/log"
 )

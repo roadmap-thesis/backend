@@ -3,7 +3,7 @@ package clients
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/config"
+	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/sashabaranov/go-openai"

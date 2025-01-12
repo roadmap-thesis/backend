@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/config"
+	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 

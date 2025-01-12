@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/repository"
+	"github.com/HotPotatoC/roadmap_gen/internal/repository"
 )
 
 type Backend struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/domain/entity"
+	"github.com/HotPotatoC/roadmap_gen/internal/domain/entity"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/im"
 )

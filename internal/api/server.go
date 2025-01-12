@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/api/handler"
-	"github.com/HotPotatoC/roadmap_gen/backend"
+	"github.com/HotPotatoC/roadmap_gen/internal/api/handler"
+	"github.com/HotPotatoC/roadmap_gen/internal/backend"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )

@@ -1,6 +1,6 @@
 package handler
 
-import "github.com/HotPotatoC/roadmap_gen/backend"
+import "github.com/HotPotatoC/roadmap_gen/internal/backend"
 
 type Handler struct {
 	backend *backend.Backend

@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/domain/object"
+	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
 )
 
 const (

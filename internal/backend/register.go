@@ -3,8 +3,8 @@ package backend
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/domain/entity"
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/internal/domain/entity"
 	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
 )
 
