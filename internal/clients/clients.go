@@ -5,19 +5,20 @@ import (
 
 	"github.com/HotPotatoC/roadmap_gen/internal/config"
 	"github.com/HotPotatoC/roadmap_gen/internal/database"
+	"github.com/HotPotatoC/roadmap_gen/internal/openai"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
 
 type Clients struct {
-	OpenAI *OpenAI
+	OpenAI *openai.Client
 	DB     database.Connection
 }
 
 func New(ctx context.Context) (*Clients, error) {
 	c := &Clients{
-		OpenAI: NewOpenAIClient(),
+		OpenAI: openai.NewClient(),
 	}
 
 	var group errgroup.Group

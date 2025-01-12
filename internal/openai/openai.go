@@ -1,4 +1,4 @@
-package clients
+package openai
 
 import (
 	"context"
@@ -9,19 +9,19 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type OpenAI struct {
+type Client struct {
 	client *openai.Client
 }
 
-func NewOpenAIClient() *OpenAI {
+func NewClient() *Client {
 	client := openai.NewClient(config.OpenAiAPIKey())
 
-	return &OpenAI{
+	return &Client{
 		client: client,
 	}
 }
 
-func (o *OpenAI) Chat(ctx context.Context, prompt string) (*openai.ChatCompletionResponse, error) {
+func (o *Client) Chat(ctx context.Context, prompt string) (*openai.ChatCompletionResponse, error) {
 	response, err := o.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: config.OpenAiModel(),
 		Messages: []openai.ChatCompletionMessage{
