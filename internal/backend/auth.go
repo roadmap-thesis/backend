@@ -8,19 +8,19 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/domain"
 )
 
-type RegisterInput struct {
+type AuthInput struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
 }
 
-type RegisterOutput struct {
+type AuthOutput struct {
 	Created bool
 	Token   string
 }
 
-func (b *backend) Register(ctx context.Context, input RegisterInput) (RegisterOutput, error) {
-	var output RegisterOutput
+func (b *backend) Auth(ctx context.Context, input AuthInput) (AuthOutput, error) {
+	var output AuthOutput
 
 	result, err := b.registerEmail(ctx, input)
 	if err != nil {
@@ -43,7 +43,7 @@ type registerEmailOutput struct {
 	created bool
 }
 
-func (b *backend) registerEmail(ctx context.Context, input RegisterInput) (*registerEmailOutput, error) {
+func (b *backend) registerEmail(ctx context.Context, input AuthInput) (*registerEmailOutput, error) {
 	existingAccount, err := b.repository.Account.GetByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err

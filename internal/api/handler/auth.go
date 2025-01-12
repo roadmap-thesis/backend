@@ -7,12 +7,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type RegisterOutput struct {
+type AuthOutput struct {
 	Token string `json:"token"`
 }
 
-func (h *Handler) Register(c echo.Context) error {
-	var input backend.RegisterInput
+func (h *Handler) Auth(c echo.Context) error {
+	var input backend.AuthInput
 
 	if err := c.Bind(&input); err != nil {
 		return commonerrors.InvalidData()
@@ -22,17 +22,17 @@ func (h *Handler) Register(c echo.Context) error {
 		return err
 	}
 
-	output, err := h.backend.Register(c.Request().Context(), input)
+	output, err := h.backend.Auth(c.Request().Context(), input)
 	if err != nil {
 		return err
 	}
 
 	if output.Created {
-		return res.Created(c, "Successfully registered.", RegisterOutput{
+		return res.Created(c, "Successfully registered.", AuthOutput{
 			Token: output.Token,
 		})
 	} else {
-		return res.OK(c, "Successfully logged in.", RegisterOutput{
+		return res.OK(c, "Successfully logged in.", AuthOutput{
 			Token: output.Token,
 		})
 	}

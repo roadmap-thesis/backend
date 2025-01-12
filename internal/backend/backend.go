@@ -7,7 +7,7 @@ import (
 )
 
 type Backend interface {
-	Register(ctx context.Context, input RegisterInput) (RegisterOutput, error)
+	Auth(ctx context.Context, input AuthInput) (AuthOutput, error)
 	Profile(ctx context.Context) (ProfileOutput, error)
 }
 
