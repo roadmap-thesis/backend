@@ -5,7 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/domain/entity"
+	"github.com/HotPotatoC/roadmap_gen/internal/database"
+	"github.com/HotPotatoC/roadmap_gen/internal/domain"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
 	"github.com/jackc/pgx/v5"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -13,23 +14,23 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql/sm"
 )
 
-type AccountRepository struct {
-	db DB
+type accountRepository struct {
+	db database.PsqlConnection
 }
 
-func NewAccountRepository(db DB) *AccountRepository {
-	return &AccountRepository{db: db}
+func NewAccountRepository(db database.PsqlConnection) domain.AccountRepository {
+	return &accountRepository{db: db}
 }
 
-func (r *AccountRepository) WithTx(db DB) *AccountRepository {
+func (r *accountRepository) WithTx(db database.PsqlConnection) domain.AccountRepository {
 	r.db = db
 	return r
 }
 
-func (r *AccountRepository) Get(ctx context.Context, col, filter string) (*entity.Account, error) {
+func (r *accountRepository) Get(ctx context.Context, col, filter string) (*domain.Account, error) {
 	query, args := psql.Select(
 		sm.Columns("id", "name", "email", "password", "created_at", "updated_at"),
-		sm.From(entity.AccountTable),
+		sm.From(domain.AccountTable),
 		sm.Where(psql.Quote("email").EQ(psql.Arg(filter))),
 	).MustBuild(ctx)
 
@@ -45,7 +46,7 @@ func (r *AccountRepository) Get(ctx context.Context, col, filter string) (*entit
 		return nil, err
 	}
 
-	account := &entity.Account{
+	account := &domain.Account{
 		ID:        id,
 		Name:      name,
 		Email:     email,
@@ -57,17 +58,17 @@ func (r *AccountRepository) Get(ctx context.Context, col, filter string) (*entit
 	return account, nil
 }
 
-func (r *AccountRepository) GetByID(ctx context.Context, filter string) (*entity.Account, error) {
+func (r *accountRepository) GetByID(ctx context.Context, filter string) (*domain.Account, error) {
 	return r.Get(ctx, "id", filter)
 }
 
-func (r *AccountRepository) GetByEmail(ctx context.Context, filter string) (*entity.Account, error) {
+func (r *accountRepository) GetByEmail(ctx context.Context, filter string) (*domain.Account, error) {
 	return r.Get(ctx, "email", filter)
 }
 
-func (r *AccountRepository) Create(ctx context.Context, input *entity.Account) (*entity.Account, error) {
+func (r *accountRepository) Create(ctx context.Context, input *domain.Account) (*domain.Account, error) {
 	query, args := psql.Insert(
-		im.Into(entity.AccountTable, "name", "email", "password"),
+		im.Into(domain.AccountTable, "name", "email", "password"),
 		im.Values(psql.Arg(input.Name, input.Email, input.Password)),
 		im.Returning("id", "name", "email", "created_at", "updated_at"),
 	).MustBuild(ctx)
@@ -80,7 +81,7 @@ func (r *AccountRepository) Create(ctx context.Context, input *entity.Account) (
 		return nil, err
 	}
 
-	account := &entity.Account{
+	account := &domain.Account{
 		ID:        id,
 		Name:      name,
 		Email:     email,

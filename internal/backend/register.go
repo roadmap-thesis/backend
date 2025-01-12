@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
-	"github.com/HotPotatoC/roadmap_gen/internal/domain/entity"
+	"github.com/HotPotatoC/roadmap_gen/internal/domain"
 	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
 	"github.com/jackc/pgx/v5"
 )
@@ -67,7 +67,7 @@ func (b *backend) registerEmail(ctx context.Context, input RegisterInput) (*regi
 			return nil
 		}
 
-		account, err := entity.NewAccount(input.Name, input.Email, input.Password)
+		account, err := domain.NewAccount(input.Name, input.Email, input.Password)
 		if err != nil {
 			return err
 		}

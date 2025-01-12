@@ -34,7 +34,7 @@ func main() {
 	}
 	defer db.Close()
 
-	dir := "./db"
+	dir := "./migrations"
 	switch *command {
 	case "up":
 		err = goose.Up(db, dir)
