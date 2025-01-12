@@ -14,11 +14,11 @@ type DB interface {
 }
 
 type Repository struct {
-	Identity *IdentityRepository
+	Account *AccountRepository
 }
 
 func New(db DB) *Repository {
 	return &Repository{
-		Identity: NewIdentityRepository(db),
+		Account: NewAccountRepository(db),
 	}
 }

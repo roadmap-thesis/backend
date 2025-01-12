@@ -29,8 +29,8 @@ func (b *backend) Register(ctx context.Context, input RegisterInput) (RegisterOu
 	}
 
 	token, err := jwt.GenerateJWT(map[string]any{
-		"user_id":    result.id,
-		"user_email": result.email,
+		"account_id":    result.id,
+		"account_email": result.email,
 	})
 	if err != nil {
 		return output, err
@@ -50,34 +50,34 @@ type registerEmailOutput struct {
 func (b *backend) registerEmail(ctx context.Context, input RegisterInput) (*registerEmailOutput, error) {
 	var output *registerEmailOutput
 	err := b.provider.Transaction.Execute(ctx, func(ctx context.Context, tx pgx.Tx) error {
-		existingIdentity, err := b.repository.Identity.WithTx(tx).GetByEmail(ctx, input.Email)
+		existingAccount, err := b.repository.Account.WithTx(tx).GetByEmail(ctx, input.Email)
 		if err != nil {
 			return err
 		}
 
-		// sign in if identity already exists
-		if existingIdentity != nil {
-			matched := existingIdentity.CheckPassword(input.Password)
+		// sign in if account already exists
+		if existingAccount != nil {
+			matched := existingAccount.CheckPassword(input.Password)
 
 			if !matched {
 				return commonerrors.InvalidCredentials()
 			}
 
-			output = &registerEmailOutput{id: existingIdentity.ID, email: existingIdentity.Email}
+			output = &registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}
 			return nil
 		}
 
-		identity, err := entity.NewIdentity(input.Name, input.Email, input.Password)
+		account, err := entity.NewAccount(input.Name, input.Email, input.Password)
 		if err != nil {
 			return err
 		}
 
-		createdIdentity, err := b.repository.Identity.WithTx(tx).Create(ctx, identity)
+		createdAccount, err := b.repository.Account.WithTx(tx).Create(ctx, account)
 		if err != nil {
 			return err
 		}
 
-		output = &registerEmailOutput{id: createdIdentity.ID, email: createdIdentity.Email, created: true}
+		output = &registerEmailOutput{id: createdAccount.ID, email: createdAccount.Email, created: true}
 		return nil
 	})
 

@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	IdentityTable = "identities"
+	AccountTable = "accounts"
 )
 
-type Identity struct {
+type Account struct {
 	ID       int
 	Name     string
 	Email    string
@@ -20,7 +20,7 @@ type Identity struct {
 	UpdatedAt time.Time
 }
 
-func NewIdentity(name, email, plainPassword string) (*Identity, error) {
+func NewAccount(name, email, plainPassword string) (*Account, error) {
 	password := object.Password(plainPassword)
 
 	if err := password.Validate(plainPassword); err != nil {
@@ -32,19 +32,19 @@ func NewIdentity(name, email, plainPassword string) (*Identity, error) {
 		return nil, err
 	}
 
-	identity := &Identity{
+	account := &Account{
 		Name:     name,
 		Email:    email,
 		Password: hash,
 	}
 
-	return identity, nil
+	return account, nil
 }
 
-func (e *Identity) CheckPassword(password string) bool {
+func (e *Account) CheckPassword(password string) bool {
 	return e.Password.Compare(password)
 }
 
-func (e *Identity) UpdateChangelog() {
+func (e *Account) UpdateChangelog() {
 	e.UpdatedAt = time.Now()
 }

@@ -30,7 +30,7 @@ func (o *OpenAI) Chat(ctx context.Context, prompt string) (*openai.ChatCompletio
 				Content: "You are a helpful assistant/teacher/mentor with broad knowledge on many topics.",
 			},
 			{
-				Role:    "user",
+				Role:    "account",
 				Content: prompt,
 			},
 		},

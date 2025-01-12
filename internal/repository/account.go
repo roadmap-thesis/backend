@@ -13,23 +13,23 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql/sm"
 )
 
-type IdentityRepository struct {
+type AccountRepository struct {
 	db DB
 }
 
-func NewIdentityRepository(db DB) *IdentityRepository {
-	return &IdentityRepository{db: db}
+func NewAccountRepository(db DB) *AccountRepository {
+	return &AccountRepository{db: db}
 }
 
-func (r *IdentityRepository) WithTx(db DB) *IdentityRepository {
+func (r *AccountRepository) WithTx(db DB) *AccountRepository {
 	r.db = db
 	return r
 }
 
-func (r *IdentityRepository) Get(ctx context.Context, col, filter string) (*entity.Identity, error) {
+func (r *AccountRepository) Get(ctx context.Context, col, filter string) (*entity.Account, error) {
 	query, args := psql.Select(
 		sm.Columns("id", "name", "email", "password", "created_at", "updated_at"),
-		sm.From(entity.IdentityTable),
+		sm.From(entity.AccountTable),
 		sm.Where(psql.Quote("email").EQ(psql.Arg(filter))),
 	).MustBuild(ctx)
 
@@ -45,7 +45,7 @@ func (r *IdentityRepository) Get(ctx context.Context, col, filter string) (*enti
 		return nil, err
 	}
 
-	identity := &entity.Identity{
+	account := &entity.Account{
 		ID:        id,
 		Name:      name,
 		Email:     email,
@@ -54,20 +54,20 @@ func (r *IdentityRepository) Get(ctx context.Context, col, filter string) (*enti
 		UpdatedAt: updatedAt,
 	}
 
-	return identity, nil
+	return account, nil
 }
 
-func (r *IdentityRepository) GetByID(ctx context.Context, filter string) (*entity.Identity, error) {
+func (r *AccountRepository) GetByID(ctx context.Context, filter string) (*entity.Account, error) {
 	return r.Get(ctx, "id", filter)
 }
 
-func (r *IdentityRepository) GetByEmail(ctx context.Context, filter string) (*entity.Identity, error) {
+func (r *AccountRepository) GetByEmail(ctx context.Context, filter string) (*entity.Account, error) {
 	return r.Get(ctx, "email", filter)
 }
 
-func (r *IdentityRepository) Create(ctx context.Context, input *entity.Identity) (*entity.Identity, error) {
+func (r *AccountRepository) Create(ctx context.Context, input *entity.Account) (*entity.Account, error) {
 	query, args := psql.Insert(
-		im.Into(entity.IdentityTable, "name", "email", "password"),
+		im.Into(entity.AccountTable, "name", "email", "password"),
 		im.Values(psql.Arg(input.Name, input.Email, input.Password)),
 		im.Returning("id", "name", "email", "created_at", "updated_at"),
 	).MustBuild(ctx)
@@ -80,7 +80,7 @@ func (r *IdentityRepository) Create(ctx context.Context, input *entity.Identity)
 		return nil, err
 	}
 
-	identity := &entity.Identity{
+	account := &entity.Account{
 		ID:        id,
 		Name:      name,
 		Email:     email,
@@ -88,5 +88,5 @@ func (r *IdentityRepository) Create(ctx context.Context, input *entity.Identity)
 		UpdatedAt: updatedAt,
 	}
 
-	return identity, nil
+	return account, nil
 }
