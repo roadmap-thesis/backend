@@ -9,6 +9,7 @@ import (
 
 type Backend interface {
 	Register(ctx context.Context, input RegisterInput) (RegisterOutput, error)
+	Profile(ctx context.Context) (ProfileOutput, error)
 }
 
 type backend struct {

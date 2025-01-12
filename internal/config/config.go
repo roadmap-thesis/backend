@@ -29,7 +29,7 @@ var config *Config
 func Init() {
 	config = &Config{
 		AppName: LookupEnv("APP_NAME", "roadmap_gen_api"),
-		AppEnv:  LookupEnv("APP_ENV", "dev"),
+		AppEnv:  LookupEnv("APP_ENV", "local"),
 		Port:    LookupEnv("PORT", "5000"),
 
 		DatabaseURL:                      LookupEnv("DATABASE_URL", ""),

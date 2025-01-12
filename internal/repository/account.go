@@ -27,11 +27,11 @@ func (r *accountRepository) WithTx(db database.PsqlConnection) domain.AccountRep
 	return r
 }
 
-func (r *accountRepository) Get(ctx context.Context, col, filter string) (*domain.Account, error) {
+func (r *accountRepository) Get(ctx context.Context, col string, filter any) (*domain.Account, error) {
 	query, args := psql.Select(
 		sm.Columns("id", "name", "email", "password", "created_at", "updated_at"),
 		sm.From(domain.AccountTable),
-		sm.Where(psql.Quote("email").EQ(psql.Arg(filter))),
+		sm.Where(psql.Quote(col).EQ(psql.Arg(filter))),
 	).MustBuild(ctx)
 
 	var id int
@@ -58,7 +58,7 @@ func (r *accountRepository) Get(ctx context.Context, col, filter string) (*domai
 	return account, nil
 }
 
-func (r *accountRepository) GetByID(ctx context.Context, filter string) (*domain.Account, error) {
+func (r *accountRepository) GetByID(ctx context.Context, filter int) (*domain.Account, error) {
 	return r.Get(ctx, "id", filter)
 }
 

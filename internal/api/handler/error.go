@@ -16,9 +16,14 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 	}
 
 	code := http.StatusInternalServerError
-	he, ok := err.(*commonerrors.AppError)
-	if ok {
-		code = he.Code()
+	switch e := err.(type) {
+	case *commonerrors.AppError:
+		code = e.Code()
+	case *echo.HTTPError:
+		if e.Code == http.StatusNotFound {
+			err = commonerrors.NotFound("Path")
+		}
+		code = e.Code
 	}
 
 	var validationErrMsgs []validationErrMsg

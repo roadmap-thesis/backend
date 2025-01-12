@@ -54,8 +54,8 @@ func (e *Account) UpdateChangelog() {
 type AccountRepository interface {
 	database.Transactional[AccountRepository]
 
-	Get(ctx context.Context, col, filter string) (*Account, error)
-	GetByID(ctx context.Context, filter string) (*Account, error)
+	Get(ctx context.Context, col string, filter any) (*Account, error)
+	GetByID(ctx context.Context, filter int) (*Account, error)
 	GetByEmail(ctx context.Context, filter string) (*Account, error)
 
 	Create(ctx context.Context, input *Account) (*Account, error)

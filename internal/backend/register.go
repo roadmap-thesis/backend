@@ -3,9 +3,9 @@ package backend
 import (
 	"context"
 
+	"github.com/HotPotatoC/roadmap_gen/internal/auth"
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain"
-	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -28,10 +28,7 @@ func (b *backend) Register(ctx context.Context, input RegisterInput) (RegisterOu
 		return output, err
 	}
 
-	token, err := jwt.GenerateJWT(map[string]any{
-		"account_id":    result.id,
-		"account_email": result.email,
-	})
+	token, err := auth.CreateToken(result.id, result.email)
 	if err != nil {
 		return output, err
 	}
