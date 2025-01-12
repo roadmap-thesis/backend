@@ -12,7 +12,7 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql/sm"
 )
 
-func (r *Repository) IdentityGetByEmail(ctx context.Context, filter string) (*entity.Identity, error) {
+func (r *Repository) IdentityGet(ctx context.Context, col, filter string) (*entity.Identity, error) {
 	query, args := psql.Select(
 		sm.Columns("id", "name", "email", "password", "created_at", "updated_at"),
 		sm.From(entity.IdentityTable),
@@ -40,4 +40,12 @@ func (r *Repository) IdentityGetByEmail(ctx context.Context, filter string) (*en
 	}
 
 	return identity, nil
+}
+
+func (r *Repository) IdentityGetByID(ctx context.Context, filter string) (*entity.Identity, error) {
+	return r.IdentityGet(ctx, "id", filter)
+}
+
+func (r *Repository) IdentityGetByEmail(ctx context.Context, filter string) (*entity.Identity, error) {
+	return r.IdentityGet(ctx, "email", filter)
 }
