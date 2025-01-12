@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/HotPotatoC/roadmap_gen/domain/entity"
-	"github.com/HotPotatoC/roadmap_gen/internal/errors"
+	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/HotPotatoC/roadmap_gen/internal/jwt"
 )
 
@@ -57,7 +57,7 @@ func (b *Backend) registerEmail(ctx context.Context, input RegisterInput) (*regi
 		matched := existingIdentity.Password.Compare(input.Password)
 
 		if !matched {
-			return nil, errors.InvalidCredentials()
+			return nil, commonerrors.InvalidCredentials()
 		}
 
 		return &registerEmailOutput{id: existingIdentity.ID, email: existingIdentity.Email}, nil

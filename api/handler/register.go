@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/HotPotatoC/roadmap_gen/api/res"
 	"github.com/HotPotatoC/roadmap_gen/backend"
-	"github.com/HotPotatoC/roadmap_gen/internal/errors"
+	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,7 +15,7 @@ func (h *Handler) Register(c echo.Context) error {
 	var input backend.RegisterInput
 
 	if err := c.Bind(&input); err != nil {
-		return errors.InvalidData()
+		return commonerrors.InvalidData()
 	}
 
 	if err := c.Validate(&input); err != nil {

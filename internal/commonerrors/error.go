@@ -1,4 +1,4 @@
-package errors
+package commonerrors
 
 type AppError struct {
 	code    int

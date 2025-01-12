@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/HotPotatoC/roadmap_gen/api/res"
-	"github.com/HotPotatoC/roadmap_gen/internal/errors"
+	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
@@ -16,7 +16,7 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 	}
 
 	code := http.StatusInternalServerError
-	he, ok := err.(*errors.AppError)
+	he, ok := err.(*commonerrors.AppError)
 	if ok {
 		code = he.Code()
 	}
