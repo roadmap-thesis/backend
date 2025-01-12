@@ -54,7 +54,7 @@ func (b *Backend) registerEmail(ctx context.Context, input RegisterInput) (*regi
 
 	// sign in if identity already exists
 	if existingIdentity != nil {
-		matched := existingIdentity.Password.Compare(input.Password)
+		matched := existingIdentity.CheckPassword(input.Password)
 
 		if !matched {
 			return nil, commonerrors.InvalidCredentials()
