@@ -11,7 +11,9 @@ import (
 )
 
 func TestAuth_Payload(t *testing.T) {
+	t.Parallel()
 	t.Run("NewPayload", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 		expiresIn := time.Hour
@@ -25,6 +27,7 @@ func TestAuth_Payload(t *testing.T) {
 	})
 
 	t.Run("NewFromClaims", func(t *testing.T) {
+		t.Parallel()
 		claims := jwt.MapClaims{
 			"id":    float64(1),
 			"email": "test@example.com",
@@ -41,6 +44,7 @@ func TestAuth_Payload(t *testing.T) {
 	})
 
 	t.Run("Claims", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 		expiresIn := time.Hour
@@ -55,6 +59,7 @@ func TestAuth_Payload(t *testing.T) {
 	})
 
 	t.Run("Valid", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 		expiresIn := time.Hour
@@ -70,6 +75,7 @@ func TestAuth_Payload(t *testing.T) {
 	})
 
 	t.Run("FromContext", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 		expiresIn := time.Hour

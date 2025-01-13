@@ -10,7 +10,9 @@ import (
 )
 
 func TestAuth_Token(t *testing.T) {
+	t.Parallel()
 	t.Run("CreateToken", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 
@@ -20,6 +22,7 @@ func TestAuth_Token(t *testing.T) {
 	})
 
 	t.Run("VerifyToken", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 
@@ -35,6 +38,7 @@ func TestAuth_Token(t *testing.T) {
 	})
 
 	t.Run("ExpiredToken", func(t *testing.T) {
+		t.Parallel()
 		id := 1
 		email := "test@example.com"
 

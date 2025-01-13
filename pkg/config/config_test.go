@@ -18,6 +18,7 @@ func unsetEnv(key string) {
 }
 
 func TestConfig_Init(t *testing.T) {
+	t.Parallel()
 	setEnv("APP_NAME", "test_app")
 	setEnv("APP_ENV", "test")
 	setEnv("PORT", "8080")
@@ -88,6 +89,8 @@ func TestConfig_Init(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			assert.Equal(t, tc.expected, tc.actual)
 		})
 	}
