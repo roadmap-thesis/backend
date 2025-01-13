@@ -14,11 +14,19 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql/sm"
 )
 
+type AccountRepository interface {
+	Get(ctx context.Context, col string, filter any) (*domain.Account, error)
+	GetByID(ctx context.Context, filter int) (*domain.Account, error)
+	GetByEmail(ctx context.Context, filter string) (*domain.Account, error)
+
+	Create(ctx context.Context, input *domain.Account) (*domain.Account, error)
+}
+
 type accountRepository struct {
 	db database.Connection
 }
 
-func NewAccountRepository(db database.Connection) domain.AccountRepository {
+func NewAccountRepository(db database.Connection) AccountRepository {
 	return &accountRepository{
 		db: db,
 	}

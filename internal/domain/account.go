@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"context"
 	"time"
 
 	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
@@ -48,12 +47,4 @@ func (e *Account) CheckPassword(password string) bool {
 
 func (e *Account) UpdateChangelog() {
 	e.UpdatedAt = time.Now()
-}
-
-type AccountRepository interface {
-	Get(ctx context.Context, col string, filter any) (*Account, error)
-	GetByID(ctx context.Context, filter int) (*Account, error)
-	GetByEmail(ctx context.Context, filter string) (*Account, error)
-
-	Create(ctx context.Context, input *Account) (*Account, error)
 }
