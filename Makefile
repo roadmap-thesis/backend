@@ -21,7 +21,7 @@ migrate-reset: ## Roll back all the migrations
 .PHONY: migrate-reset
 
 format: ## Runs go fmt and go vet
-	go fmt ./... && go vet ./...
+	@go fmt ./... && go vet -v ./...
 .PHONY: format
 
 test: ## Runs tests
