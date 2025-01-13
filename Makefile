@@ -17,3 +17,9 @@ migrate-reset: ## Roll back all the migrations
 
 format: ## Runs go fmt and go vet
 	go fmt ./... && go vet ./...
+
+test: ## Runs tests
+	go test -v ./...
+
+bench: ## Runs benchmark
+	go test -bench=. ./... -benchmem

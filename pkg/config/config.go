@@ -33,8 +33,8 @@ func Init() {
 		Port:    LookupEnv("PORT", "5000"),
 
 		DatabaseURL:                      LookupEnv("DATABASE_URL", ""),
-		DatabaseMaxConns:                 LookupEnv[int32]("DATABASE_MAX_CONNS", 4),
-		DatabaseMinConns:                 LookupEnv[int32]("DATABASE_MIN_CONNS", 0),
+		DatabaseMaxConns:                 LookupEnv("DATABASE_MAX_CONNS", int32(4)),
+		DatabaseMinConns:                 LookupEnv("DATABASE_MIN_CONNS", int32(0)),
 		DatabaseMaxConnLifetime:          LookupEnv("DATABASE_MAX_CONN_LIFETIME", time.Hour),
 		DatabaseMaxConnIdleTime:          LookupEnv("DATABASE_MAX_CONN_IDLETIME", time.Minute*30),
 		DatabaseHealthCheckPeriod:        LookupEnv("DATABASE_HEALTH_CHECK_PERIOD", time.Minute),
@@ -66,5 +66,11 @@ func DatabaseDefaultConnectionTimeout() time.Duration { return config.DatabaseDe
 func OpenAiAPIKey() string { return config.OpenAiAPIKey }
 func OpenAiModel() string  { return config.OpenAiModel }
 
+func SetOpenAiAPIKey(key string)  { config.OpenAiAPIKey = key }
+func SetOpenAiModel(model string) { config.OpenAiModel = model }
+
 func JWTSecretKey() string              { return config.JWTSecretKey }
 func JWTSecretExpiresIn() time.Duration { return config.JWTSecretExpiresIn }
+
+func SetJWTSecretKey(key string)                   { config.JWTSecretKey = key }
+func SetJWTSecretExpiresIn(duration time.Duration) { config.JWTSecretExpiresIn = duration }

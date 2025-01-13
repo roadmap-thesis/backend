@@ -27,7 +27,11 @@ func New(port string) *Server {
 	return srv
 }
 
-func (s *Server) Listen() <-chan os.Signal {
+func (s *Server) Port() string {
+	return s.port
+}
+
+func (s *Server) Listen() chan os.Signal {
 	exitSignal := make(chan os.Signal, 1)
 	signal.Notify(exitSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	go func() {
