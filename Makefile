@@ -30,5 +30,14 @@ test: ## Runs tests
 		-count=1 \
 		-short \
 		-timeout=5m \
-		./...
+		./... \
+		-coverprofile=./coverage/coverage.out
 .PHONY: test
+
+coverage: ## Shows the coverage of the tests
+	@go tool cover -html=./coverage/coverage.out -o=./coverage/coverage.html
+.PHONY: coverage
+
+coverage-serve: coverage ## Serves the coverage report
+	@serve ./coverage
+.PHONY: coverage-serve

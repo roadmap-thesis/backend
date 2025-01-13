@@ -75,6 +75,14 @@ func TestConfig_LookupEnv(t *testing.T) {
 		assert.Equal(t, time.Minute, result)
 	})
 
+	t.Run("DurationInvalid", func(t *testing.T) {
+		os.Setenv("TEST_DURATION_INVALID", "invalid")
+		defer os.Unsetenv("TEST_DURATION_INVALID")
+
+		result := config.LookupEnv("TEST_DURATION_INVALID", time.Minute)
+		assert.Equal(t, time.Minute, result)
+	})
+
 	t.Run("StringSlice", func(t *testing.T) {
 		os.Setenv("TEST_STRING_SLICE", "a,b,c")
 		defer os.Unsetenv("TEST_STRING_SLICE")
