@@ -12,15 +12,15 @@ type TransactionFunc func(tx pgx.Tx) error
 
 // InTx starts a new transaction then calls fn() with the provided isolation level.
 // Rollback() the transaction if an error was found from fn(), Commit() otherwise.
-func (db *DB) InTx(ctx context.Context, isoLevel pgx.TxIsoLevel, fn TransactionFunc) error {
+func (db *DB) InTx(ctx context.Context, fn TransactionFunc) error {
 	conn, err := db.Pool.Acquire(ctx)
 	if err != nil {
 		return fmt.Errorf("acquiring connection: %w", err)
 	}
 	defer conn.Release()
 
-	log.Debug().Str("isoLevel", string(isoLevel)).Msg("starting transaction")
-	tx, err := db.Pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: isoLevel})
+	log.Debug().Msg("starting transaction")
+	tx, err := db.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("starting transaction: %w", err)
 	}

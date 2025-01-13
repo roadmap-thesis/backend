@@ -82,7 +82,7 @@ func (r *accountRepository) Create(ctx context.Context, input *domain.Account) (
 	var name, email string
 	var createdAt, updatedAt time.Time
 
-	err := r.db.InTx(ctx, pgx.ReadCommitted, func(tx pgx.Tx) error {
+	err := r.db.InTx(ctx, func(tx pgx.Tx) error {
 		return tx.QueryRow(ctx, query, args...).Scan(&id, &name, &email, &createdAt, &updatedAt)
 	})
 	if err != nil {

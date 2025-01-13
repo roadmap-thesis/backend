@@ -17,7 +17,7 @@ type Connection interface {
 	QueryRow(ctx context.Context, query string, args ...any) pgx.Row
 	Query(context.Context, string, ...any) (pgx.Rows, error)
 
-	InTx(ctx context.Context, level pgx.TxIsoLevel, fn TransactionFunc) error
+	InTx(ctx context.Context, fn TransactionFunc) error
 
 	Close()
 }
