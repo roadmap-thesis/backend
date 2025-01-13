@@ -20,8 +20,8 @@ func New(port string) *Server {
 	instance := NewEchoInstance()
 
 	srv := &Server{
-		port: port,
 		Echo: instance,
+		port: port,
 	}
 
 	return srv

@@ -9,31 +9,31 @@ import (
 )
 
 type Server struct {
-	srv     *server.Server
-	backend backend.Backend
-	handler *handler.Handler
+	instance *server.Server
+	backend  backend.Backend
+	handler  *handler.Handler
 }
 
 func NewServer(port string, backend backend.Backend) *Server {
-	srv := server.New(port)
+	instance := server.New(port)
 
 	handler := handler.New(backend)
 	api := &Server{
-		backend: backend,
-		handler: handler,
-		srv:     srv,
+		backend:  backend,
+		handler:  handler,
+		instance: instance,
 	}
 
 	api.setupMiddlewares()
 	api.setupRoutes()
-	api.srv.HTTPErrorHandler = handler.ErrorHandler
+	api.instance.HTTPErrorHandler = handler.ErrorHandler
 
 	return api
 }
 
 func (s *Server) Start(ctx context.Context) {
-	exit := s.srv.Listen()
+	exit := s.instance.Listen()
 
 	signal := <-exit
-	s.srv.Shutdown(ctx, signal)
+	s.instance.Shutdown(ctx, signal)
 }

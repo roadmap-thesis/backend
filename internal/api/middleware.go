@@ -8,8 +8,8 @@ import (
 )
 
 func (s *Server) setupMiddlewares() {
-	s.srv.Use(middleware.CORS())
-	s.srv.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+	s.instance.Use(middleware.CORS())
+	s.instance.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:      true,
 		LogStatus:   true,
 		LogError:    true,
