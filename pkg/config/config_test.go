@@ -51,62 +51,46 @@ func TestConfig_Init(t *testing.T) {
 	config.Init()
 
 	cfg := config.GetConfig()
-	t.Run("AppName", func(t *testing.T) {
-		assert.Equal(t, "test_app", cfg.AppName)
-		assert.Equal(t, "test_app", config.AppName())
-	})
-	t.Run("AppEnv", func(t *testing.T) {
-		assert.Equal(t, "test", cfg.AppEnv)
-		assert.Equal(t, "test", config.AppEnv())
-	})
-	t.Run("Port", func(t *testing.T) {
-		assert.Equal(t, "8080", cfg.Port)
-		assert.Equal(t, "8080", config.Port())
-	})
-	t.Run("DatabaseURL", func(t *testing.T) {
-		assert.Equal(t, "postgres://user:pass@localhost:5432/dbname", cfg.DatabaseURL)
-		assert.Equal(t, "postgres://user:pass@localhost:5432/dbname", config.DatabaseURL())
-	})
-	t.Run("DatabaseMaxConns", func(t *testing.T) {
-		assert.Equal(t, int32(10), cfg.DatabaseMaxConns)
-		assert.Equal(t, int32(10), config.DatabaseMaxConns())
-	})
-	t.Run("DatabaseMinConns", func(t *testing.T) {
-		assert.Equal(t, int32(1), cfg.DatabaseMinConns)
-		assert.Equal(t, int32(1), config.DatabaseMinConns())
-	})
-	t.Run("DatabaseMaxConnLifetime", func(t *testing.T) {
-		assert.Equal(t, 2*time.Hour, cfg.DatabaseMaxConnLifetime)
-		assert.Equal(t, 2*time.Hour, config.DatabaseMaxConnLifetime())
-	})
-	t.Run("DatabaseMaxConnIdleTime", func(t *testing.T) {
-		assert.Equal(t, 1*time.Hour, cfg.DatabaseMaxConnIdleTime)
-		assert.Equal(t, 1*time.Hour, config.DatabaseMaxConnIdleTime())
-	})
-	t.Run("DatabaseHealthCheckPeriod", func(t *testing.T) {
-		assert.Equal(t, 30*time.Minute, cfg.DatabaseHealthCheckPeriod)
-		assert.Equal(t, 30*time.Minute, config.DatabaseHealthCheckPeriod())
-	})
-	t.Run("DatabaseDefaultConnectionTimeout", func(t *testing.T) {
-		assert.Equal(t, 10*time.Second, cfg.DatabaseDefaultConnectionTimeout)
-		assert.Equal(t, 10*time.Second, config.DatabaseDefaultConnectionTimeout())
-	})
-	t.Run("JWTSecretKey", func(t *testing.T) {
-		assert.Equal(t, "test_secret", cfg.JWTSecretKey)
-		assert.Equal(t, "test_secret", config.JWTSecretKey())
-	})
-	t.Run("JWTSecretExpiresIn", func(t *testing.T) {
-		assert.Equal(t, 48*time.Hour, cfg.JWTSecretExpiresIn)
-		assert.Equal(t, 48*time.Hour, config.JWTSecretExpiresIn())
-	})
-	t.Run("OpenAiAPIKey", func(t *testing.T) {
-		assert.Equal(t, "test_api_key", cfg.OpenAiAPIKey)
-		assert.Equal(t, "test_api_key", config.OpenAiAPIKey())
-	})
-	t.Run("OpenAiModel", func(t *testing.T) {
-		assert.Equal(t, "gpt-4", cfg.OpenAiModel)
-		assert.Equal(t, "gpt-4", config.OpenAiModel())
-	})
+	testCases := []struct {
+		name     string
+		expected interface{}
+		actual   interface{}
+	}{
+		{"AppName", "test_app", cfg.AppName},
+		{"AppNameFunc", "test_app", config.AppName()},
+		{"AppEnv", "test", cfg.AppEnv},
+		{"AppEnvFunc", "test", config.AppEnv()},
+		{"Port", "8080", cfg.Port},
+		{"PortFunc", "8080", config.Port()},
+		{"DatabaseURL", "postgres://user:pass@localhost:5432/dbname", cfg.DatabaseURL},
+		{"DatabaseURLFunc", "postgres://user:pass@localhost:5432/dbname", config.DatabaseURL()},
+		{"DatabaseMaxConns", int32(10), cfg.DatabaseMaxConns},
+		{"DatabaseMaxConnsFunc", int32(10), config.DatabaseMaxConns()},
+		{"DatabaseMinConns", int32(1), cfg.DatabaseMinConns},
+		{"DatabaseMinConnsFunc", int32(1), config.DatabaseMinConns()},
+		{"DatabaseMaxConnLifetime", 2 * time.Hour, cfg.DatabaseMaxConnLifetime},
+		{"DatabaseMaxConnLifetimeFunc", 2 * time.Hour, config.DatabaseMaxConnLifetime()},
+		{"DatabaseMaxConnIdleTime", 1 * time.Hour, cfg.DatabaseMaxConnIdleTime},
+		{"DatabaseMaxConnIdleTimeFunc", 1 * time.Hour, config.DatabaseMaxConnIdleTime()},
+		{"DatabaseHealthCheckPeriod", 30 * time.Minute, cfg.DatabaseHealthCheckPeriod},
+		{"DatabaseHealthCheckPeriodFunc", 30 * time.Minute, config.DatabaseHealthCheckPeriod()},
+		{"DatabaseDefaultConnectionTimeout", 10 * time.Second, cfg.DatabaseDefaultConnectionTimeout},
+		{"DatabaseDefaultConnectionTimeoutFunc", 10 * time.Second, config.DatabaseDefaultConnectionTimeout()},
+		{"JWTSecretKey", "test_secret", cfg.JWTSecretKey},
+		{"JWTSecretKeyFunc", "test_secret", config.JWTSecretKey()},
+		{"JWTSecretExpiresIn", 48 * time.Hour, cfg.JWTSecretExpiresIn},
+		{"JWTSecretExpiresInFunc", 48 * time.Hour, config.JWTSecretExpiresIn()},
+		{"OpenAiAPIKey", "test_api_key", cfg.OpenAiAPIKey},
+		{"OpenAiAPIKeyFunc", "test_api_key", config.OpenAiAPIKey()},
+		{"OpenAiModel", "gpt-4", cfg.OpenAiModel},
+		{"OpenAiModelFunc", "gpt-4", config.OpenAiModel()},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, tc.actual)
+		})
+	}
 }
 
 func TestConfig_SetOpenAiAPIKey(t *testing.T) {
