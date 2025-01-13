@@ -14,6 +14,7 @@ import (
 )
 
 func TestServer_New(t *testing.T) {
+	t.Parallel()
 	port := "8080"
 	srv := server.New(port)
 	assert.NotNil(t, srv)
@@ -22,6 +23,7 @@ func TestServer_New(t *testing.T) {
 }
 
 func TestServer_Listen(t *testing.T) {
+	t.Parallel()
 	port := "8080"
 	srv := server.New(port)
 
@@ -39,6 +41,7 @@ func TestServer_Listen(t *testing.T) {
 }
 
 func TestServer_Shutdown(t *testing.T) {
+	t.Parallel()
 	port := "8080"
 	srv := server.New(port)
 

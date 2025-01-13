@@ -11,6 +11,7 @@ import (
 )
 
 func TestRender_OK(t *testing.T) {
+	t.Parallel()
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
@@ -26,6 +27,7 @@ func TestRender_OK(t *testing.T) {
 }
 
 func TestRender_Created(t *testing.T) {
+	t.Parallel()
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodPost, "/", nil)
 	rec := httptest.NewRecorder()
@@ -41,6 +43,7 @@ func TestRender_Created(t *testing.T) {
 }
 
 func TestRender_Error(t *testing.T) {
+	t.Parallel()
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()

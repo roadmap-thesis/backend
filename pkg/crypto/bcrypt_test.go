@@ -9,6 +9,7 @@ import (
 )
 
 func TestCrypto_BcryptHash(t *testing.T) {
+	t.Parallel()
 	plainPassword := "mysecretpassword"
 	hash, err := crypto.BcryptHash(plainPassword)
 	assert.NoError(t, err)
@@ -16,6 +17,7 @@ func TestCrypto_BcryptHash(t *testing.T) {
 }
 
 func TestCrypto_BcryptCompare(t *testing.T) {
+	t.Parallel()
 	plainPassword := "mysecretpassword"
 	hash, err := crypto.BcryptHash(plainPassword)
 	assert.NoError(t, err)
