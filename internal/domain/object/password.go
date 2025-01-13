@@ -9,7 +9,10 @@ import (
 
 var (
 	// ErrPasswordInvalidCharacters is returned when the password contains invalid characters
-	ErrPasswordInvalidCharacters = errors.New("err password invalid characters")
+	ErrPasswordInvalidCharacters = errors.New("password invalid characters")
+
+	// ErrPasswordEmpty is returned when the password is empty
+	ErrPasswordEmpty = errors.New("password empty")
 )
 
 // Password can be plain/hashed
@@ -17,6 +20,10 @@ type Password string
 
 // Validate validates a plain password
 func (p *Password) Validate(plain string) error {
+	if plain == "" {
+		return ErrPasswordEmpty
+	}
+
 	if !p.validateCharacters(plain) {
 		return ErrPasswordInvalidCharacters
 	}
@@ -36,6 +43,10 @@ func (p *Password) validateCharacters(plain string) bool {
 
 // Hash generates a hash for the password
 func (p Password) Hash(plain string) (Password, error) {
+	if err := p.Validate(plain); err != nil {
+		return "", err
+	}
+
 	hash, err := crypto.BcryptHash(plain)
 	if err != nil {
 		return "", err
