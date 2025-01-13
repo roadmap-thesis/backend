@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/api/res"
+	"github.com/HotPotatoC/roadmap_gen/internal/api/render"
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -40,9 +40,9 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 		err = c.NoContent(code)
 	} else {
 		if len(validationErrMsgs) > 0 {
-			err = res.Error(c, code, "Validation failed.", validationErrMsgs)
+			err = render.Error(c, code, "Validation failed.", validationErrMsgs)
 		} else {
-			err = res.Error(c, code, err.Error(), nil)
+			err = render.Error(c, code, err.Error(), nil)
 		}
 	}
 }

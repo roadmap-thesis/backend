@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/internal/api/res"
+	"github.com/HotPotatoC/roadmap_gen/internal/api/render"
 	"github.com/HotPotatoC/roadmap_gen/internal/backend"
 	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
 	"github.com/labstack/echo/v4"
@@ -28,11 +28,11 @@ func (h *Handler) Auth(c echo.Context) error {
 	}
 
 	if output.Created {
-		return res.Created(c, "Successfully registered.", AuthOutput{
+		return render.Created(c, "Successfully registered.", AuthOutput{
 			Token: output.Token,
 		})
 	} else {
-		return res.OK(c, "Successfully logged in.", AuthOutput{
+		return render.OK(c, "Successfully logged in.", AuthOutput{
 			Token: output.Token,
 		})
 	}

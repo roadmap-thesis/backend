@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/internal/api/res"
+	"github.com/HotPotatoC/roadmap_gen/internal/api/render"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,7 +16,7 @@ func (h *Handler) Profile(c echo.Context) error {
 		return err
 	}
 
-	return res.OK(c, "Profile details.", ProfileOutput{
+	return render.OK(c, "Profile details.", ProfileOutput{
 		ID:   output.ID,
 		Name: output.Name,
 	})
