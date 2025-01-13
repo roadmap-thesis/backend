@@ -21,7 +21,7 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 		code = e.Code()
 	case *echo.HTTPError:
 		if e.Code == http.StatusNotFound {
-			err = commonerrors.NotFound("Path")
+			err = commonerrors.ResourceNotFound("Path")
 		}
 		code = e.Code
 	}

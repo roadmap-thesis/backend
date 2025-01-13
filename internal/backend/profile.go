@@ -21,7 +21,7 @@ func (b *backend) Profile(ctx context.Context) (ProfileOutput, error) {
 	}
 
 	if account == nil {
-		return ProfileOutput{}, commonerrors.NotFound("Account")
+		return ProfileOutput{}, commonerrors.ResourceNotFound("Account")
 	}
 
 	return ProfileOutput{
