@@ -3,7 +3,7 @@ package openai
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/sashabaranov/go-openai"

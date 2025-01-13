@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/api/render"
-	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/render"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )

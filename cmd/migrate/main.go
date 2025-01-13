@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"flag"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
-	"github.com/HotPotatoC/roadmap_gen/internal/logger"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/logger"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/pressly/goose/v3"

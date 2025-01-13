@@ -3,8 +3,8 @@ package backend
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/auth"
-	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/auth"
+	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
 )
 
 type ProfileOutput struct {

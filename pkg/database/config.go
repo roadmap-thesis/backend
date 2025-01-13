@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

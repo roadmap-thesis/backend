@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 

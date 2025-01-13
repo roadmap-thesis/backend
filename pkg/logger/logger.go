@@ -3,7 +3,7 @@ package logger
 import (
 	"os"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"

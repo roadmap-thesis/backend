@@ -4,7 +4,7 @@ import (
 	"errors"
 	"unicode"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/crypto"
+	"github.com/HotPotatoC/roadmap_gen/pkg/crypto"
 )
 
 var (

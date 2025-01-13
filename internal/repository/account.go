@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/database"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain"
 	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
+	"github.com/HotPotatoC/roadmap_gen/pkg/database"
 	"github.com/jackc/pgx/v5"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/im"

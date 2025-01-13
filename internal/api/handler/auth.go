@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/internal/api/render"
 	"github.com/HotPotatoC/roadmap_gen/internal/backend"
-	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/render"
 	"github.com/labstack/echo/v4"
 )
 

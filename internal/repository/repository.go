@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/internal/database"
+	"github.com/HotPotatoC/roadmap_gen/pkg/database"
 )
 
 type Repository struct {

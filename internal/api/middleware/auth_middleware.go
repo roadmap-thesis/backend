@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"context"
 	"strings"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/auth"
-	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/auth"
+	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/server"
 	"github.com/labstack/echo/v4"
 )
 
@@ -27,8 +27,7 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 			return commonerrors.Unauthorized()
 		}
 
-		ctx := context.WithValue(c.Request().Context(), auth.AuthCtxKey, payload)
-		c.SetRequest(c.Request().WithContext(ctx))
+		server.InjectEchoCtx(c, auth.AuthCtxKey, payload)
 		return next(c)
 	}
 }

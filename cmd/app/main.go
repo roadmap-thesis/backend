@@ -6,9 +6,9 @@ import (
 	"github.com/HotPotatoC/roadmap_gen/internal/api"
 	"github.com/HotPotatoC/roadmap_gen/internal/backend"
 	"github.com/HotPotatoC/roadmap_gen/internal/clients"
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
-	"github.com/HotPotatoC/roadmap_gen/internal/logger"
 	"github.com/HotPotatoC/roadmap_gen/internal/repository"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/logger"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/zerolog/log"
 )
@@ -29,10 +29,7 @@ func main() {
 
 	repository := repository.New(clients.DB)
 	backend := backend.New(repository)
-	server := api.New(backend)
+	server := api.NewServer(config.Port(), backend)
 
-	exit := server.Listen(config.Port())
-
-	signal := <-exit
-	server.Shutdown(ctx, signal)
+	server.Start(ctx)
 }

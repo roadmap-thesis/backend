@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/commonerrors"
+	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
 	"github.com/golang-jwt/jwt/v5"
 )
 

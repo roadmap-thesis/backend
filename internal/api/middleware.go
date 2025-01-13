@@ -1,15 +1,15 @@
 package api
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/internal/config"
+	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
 )
 
 func (s *Server) setupMiddlewares() {
-	s.instance.Use(middleware.CORS())
-	s.instance.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+	s.srv.Use(middleware.CORS())
+	s.srv.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:      true,
 		LogStatus:   true,
 		LogError:    true,
