@@ -41,6 +41,12 @@ func NewAccount(name, email, plainPassword string) (*Account, error) {
 	return account, nil
 }
 
+func (e *Account) Update(name, email string) {
+	e.Name = name
+	e.Email = email
+	e.UpdateChangelog()
+}
+
 func (e *Account) CheckPassword(password string) bool {
 	return e.Password.Compare(password)
 }
