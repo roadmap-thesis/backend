@@ -1,6 +1,6 @@
 package io
 
-type ProfileOutput struct {
+type GetProfileOutput struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`

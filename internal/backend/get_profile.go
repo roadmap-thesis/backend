@@ -7,15 +7,15 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/auth"
 )
 
-func (b *backend) GetProfile(ctx context.Context) (io.ProfileOutput, error) {
+func (b *backend) GetProfile(ctx context.Context) (io.GetProfileOutput, error) {
 	auth := auth.FromContext(ctx)
 
 	account, err := b.repository.Account.GetByID(ctx, auth.ID)
 	if err != nil {
-		return io.ProfileOutput{}, err
+		return io.GetProfileOutput{}, err
 	}
 
-	return io.ProfileOutput{
+	return io.GetProfileOutput{
 		ID:    account.ID,
 		Name:  account.Name,
 		Email: account.Email,
