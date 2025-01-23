@@ -12,7 +12,7 @@ type Backend interface {
 	Auth(ctx context.Context, input io.AuthInput) (io.AuthOutput, error)
 	GetProfile(ctx context.Context) (io.GetProfileOutput, error)
 
-	GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoadmapOutput, error)
+	GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoadmapBySlugOutput, error)
 	GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapInput) (io.GenerateRoadmapOutput, error)
 
 	// ListUserRoadmaps(ctx context.Context) (io.ListUserRoadmapsOutput, error)
