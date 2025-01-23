@@ -17,7 +17,7 @@ type Roadmap struct {
 	Slug        string
 	Description string
 
-	Account *Account
+	Account Account
 	Topics  []*Topic
 
 	CreatedAt time.Time
@@ -110,7 +110,7 @@ func (e *Roadmap) calculateCompletionPercentage(topics []*Topic, totalTopics int
 	return totalTopicsFinished / float64(totalTopics)
 }
 
-func (e *Roadmap) SetCreator(acc *Account) {
+func (e *Roadmap) SetCreator(acc Account) {
 	e.Account = acc
 }
 

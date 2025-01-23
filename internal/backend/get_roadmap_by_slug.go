@@ -18,21 +18,25 @@ func (b *backend) GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoad
 		return io.GetRoadmapOutput{}, err
 	}
 
-	return b.makeGetRoadmapBySlugOutput(account, roadmap), nil
+	roadmap.SetCreator(account)
+
+	return b.makeGetRoadmapBySlugOutput(roadmap), nil
 }
 
-func (b *backend) makeGetRoadmapBySlugOutput(account domain.Account, roadmap domain.Roadmap) io.GetRoadmapOutput {
+func (b *backend) makeGetRoadmapBySlugOutput(roadmap domain.Roadmap) io.GetRoadmapOutput {
 	output := io.GetRoadmapOutput{
 		ID:          roadmap.ID,
 		Title:       roadmap.Title,
 		Slug:        roadmap.Slug,
 		Description: roadmap.Description,
 		Creator: io.GetRoadmapOutputCreator{
-			ID:   account.ID,
-			Name: account.Name,
+			ID:   roadmap.Account.ID,
+			Name: roadmap.Account.Name,
 		},
-		CreatedAt: roadmap.CreatedAt,
-		UpdatedAt: roadmap.UpdatedAt,
+		TotalTopics:          roadmap.TotalTopics(),
+		CompletionPercentage: roadmap.CompletionPercentage(),
+		CreatedAt:            roadmap.CreatedAt,
+		UpdatedAt:            roadmap.UpdatedAt,
 	}
 
 	// Map topics to output also map subtopics into topics

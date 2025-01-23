@@ -3,14 +3,16 @@ package io
 import "time"
 
 type GetRoadmapOutput struct {
-	ID          int                      `json:"id"`
-	Title       string                   `json:"title"`
-	Slug        string                   `json:"slug"`
-	Description string                   `json:"description"`
-	Creator     GetRoadmapOutputCreator  `json:"creator"`
-	Topics      []GetRoadmapOutputTopics `json:"topics"`
-	CreatedAt   time.Time                `json:"created_at"`
-	UpdatedAt   time.Time                `json:"updated_at"`
+	ID                   int                      `json:"id"`
+	Title                string                   `json:"title"`
+	Slug                 string                   `json:"slug"`
+	Description          string                   `json:"description"`
+	Creator              GetRoadmapOutputCreator  `json:"creator"`
+	Topics               []GetRoadmapOutputTopics `json:"topics"`
+	TotalTopics          int                      `json:"total_topics"`
+	CompletionPercentage float64                  `json:"completion_percentage"`
+	CreatedAt            time.Time                `json:"created_at"`
+	UpdatedAt            time.Time                `json:"updated_at"`
 }
 
 type GetRoadmapOutputCreator struct {
