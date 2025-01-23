@@ -31,6 +31,6 @@ func main() {
 	backend := backend.New(repository, clients.OpenAI)
 	api := api.New(config.Port(), backend)
 
-	log.Info().Msg("Starting API server...")
+	log.Info().Msg("Starting Application Server...")
 	api.Start(ctx)
 }
