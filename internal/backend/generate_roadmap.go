@@ -102,12 +102,6 @@ func (b *backend) makeGenerateRoadmapUserPrompt(input io.GenerateRoadmapInput) s
 	sb.WriteString(string(input.PersonalizationOptions.SkillLevel))
 	sb.WriteString("\n")
 
-	if input.PersonalizationOptions.LearningGoal != "" {
-		sb.WriteString("- Learning Goal: ")
-		sb.WriteString(string(input.PersonalizationOptions.LearningGoal))
-		sb.WriteString("\n")
-	}
-
 	if input.PersonalizationOptions.AdditionalInfo != "" {
 		sb.WriteString("- Additional Information:\n \"\"\"\n ")
 		sb.WriteString(input.PersonalizationOptions.AdditionalInfo)
@@ -126,7 +120,6 @@ func (b *backend) makeGenerateRoadmapSystemPrompt() string {
    - Daily Time Availability: How much time the user can dedicate daily (e.g., 15 minutes, 30 minutes, 1 hour).
    - Total Duration: The overall duration of the roadmap (e.g., 1 week, 3 months).
    - Skill Level: The user's experience level (e.g., Beginner, Intermediate, Advanced).
-   - Learning Goal: The user's learning goal for the roadmap or target (e.g., Academic, Professional, Personal). IMPORTANT: This is Optional for the user, but if provided, make it the main focus goal of the roadmap.
    - Additional Info: Any other user-provided goals or preferences. This is Optional for the user.
 
 ### Guidelines:
@@ -172,7 +165,6 @@ The roadmap must adhere to this format while reflecting the user's provided topi
 - Daily Time Availability: 1 hour/day
 - Total Duration: 1 month
 - Skill Level: beginner
-- Learning Goal: academic
 
 ### Output:
 
