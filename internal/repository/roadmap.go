@@ -144,18 +144,14 @@ func (r *RoadmapRepository) Save(ctx context.Context, input *domain.Roadmap) (do
 	query, args := psql.Insert(
 		im.Into(domain.RoadmapTable, "account_id", "title", "slug", "description", "created_at", "updated_at"),
 		im.Values(psql.Arg(input.AccountID, input.Title, input.Slug, input.Description, input.CreatedAt, input.UpdatedAt)),
-		im.Returning("id", "title", "slug", "description", "created_at", "updated_at"),
+		im.Returning("id", "slug"),
 	).MustBuild(ctx)
 
 	var roadmap domain.Roadmap
 	err := r.db.InTx(ctx, func(tx pgx.Tx) error {
 		err := tx.QueryRow(ctx, query, args...).Scan(
 			&roadmap.ID,
-			&roadmap.Title,
 			&roadmap.Slug,
-			&roadmap.Description,
-			&roadmap.CreatedAt,
-			&roadmap.UpdatedAt,
 		)
 		if err != nil {
 			return err
