@@ -1,18 +1,19 @@
 package object
 
 import (
-	"errors"
+	"fmt"
 	"unicode"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/crypto"
+	"github.com/roadmap-thesis/backend/pkg/apperrors"
+	"github.com/roadmap-thesis/backend/pkg/crypto"
 )
 
 var (
 	// ErrPasswordInvalidCharacters is returned when the password contains invalid characters
-	ErrPasswordInvalidCharacters = errors.New("password invalid characters")
+	ErrPasswordInvalidCharacters = fmt.Errorf("%w: password invalid characters", apperrors.InvalidData())
 
 	// ErrPasswordEmpty is returned when the password is empty
-	ErrPasswordEmpty = errors.New("password empty")
+	ErrPasswordEmpty = fmt.Errorf("%w: password empty", apperrors.InvalidData())
 )
 
 // Password can be plain/hashed

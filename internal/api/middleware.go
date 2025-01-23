@@ -1,10 +1,11 @@
 package api
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/time/rate"
 )
 
 func (s *Server) setupMiddlewares() {
@@ -32,4 +33,5 @@ func (s *Server) setupMiddlewares() {
 			return nil
 		},
 	}))
+	s.instance.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(20))))
 }

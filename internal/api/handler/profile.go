@@ -1,14 +1,9 @@
 package handler
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/pkg/render"
 	"github.com/labstack/echo/v4"
+	"github.com/roadmap-thesis/backend/pkg/render"
 )
-
-type ProfileOutput struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
 
 func (h *Handler) Profile(c echo.Context) error {
 	output, err := h.backend.Profile(c.Request().Context())
@@ -16,8 +11,5 @@ func (h *Handler) Profile(c echo.Context) error {
 		return err
 	}
 
-	return render.OK(c, "Profile details.", ProfileOutput{
-		ID:   output.ID,
-		Name: output.Name,
-	})
+	return render.OK(c, "Profile details.", output)
 }

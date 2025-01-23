@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/roadmap-thesis/backend/pkg/config"
 )
 
 func ExtractDatabaseConfig(connString string) (*pgxpool.Config, error) {

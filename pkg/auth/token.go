@@ -3,12 +3,12 @@ package auth
 import (
 	"fmt"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/config"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/roadmap-thesis/backend/pkg/config"
 )
 
-func CreateToken(id int, email string) (string, error) {
-	payload := NewPayload(id, email, config.JWTSecretExpiresIn()).Claims()
+func CreateToken(id int) (string, error) {
+	payload := NewPayload(id, config.JWTSecretExpiresIn()).Claims()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 	return token.SignedString([]byte(config.JWTSecretKey()))
 }

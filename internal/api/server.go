@@ -3,9 +3,9 @@ package api
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/api/handler"
-	"github.com/HotPotatoC/roadmap_gen/internal/backend"
-	"github.com/HotPotatoC/roadmap_gen/pkg/server"
+	"github.com/roadmap-thesis/backend/internal/api/handler"
+	"github.com/roadmap-thesis/backend/internal/backend"
+	"github.com/roadmap-thesis/backend/pkg/server"
 )
 
 type Server struct {
@@ -14,7 +14,7 @@ type Server struct {
 	handler  *handler.Handler
 }
 
-func NewServer(port string, backend backend.Backend) *Server {
+func New(port string, backend backend.Backend) *Server {
 	instance := server.New(port)
 
 	handler := handler.New(backend)

@@ -3,7 +3,7 @@ package object_test
 import (
 	"testing"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
+	"github.com/roadmap-thesis/backend/internal/domain/object"
 	"github.com/stretchr/testify/assert"
 )
 

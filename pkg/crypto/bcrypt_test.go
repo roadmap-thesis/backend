@@ -3,7 +3,7 @@ package crypto_test
 import (
 	"testing"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/crypto"
+	"github.com/roadmap-thesis/backend/pkg/crypto"
 
 	"github.com/stretchr/testify/assert"
 )

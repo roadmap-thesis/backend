@@ -3,31 +3,21 @@ package backend
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/domain"
-	"github.com/HotPotatoC/roadmap_gen/pkg/auth"
-	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
+	"github.com/roadmap-thesis/backend/internal/domain"
+	"github.com/roadmap-thesis/backend/internal/io"
+	"github.com/roadmap-thesis/backend/pkg/apperrors"
+	"github.com/roadmap-thesis/backend/pkg/auth"
 )
 
-type AuthInput struct {
-	Name     string `json:"name" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=6"`
-}
-
-type AuthOutput struct {
-	Created bool
-	Token   string
-}
-
-func (b *backend) Auth(ctx context.Context, input AuthInput) (AuthOutput, error) {
-	var output AuthOutput
+func (b *backend) Auth(ctx context.Context, input io.AuthInput) (io.AuthOutput, error) {
+	var output io.AuthOutput
 
 	result, err := b.registerEmail(ctx, input)
 	if err != nil {
 		return output, err
 	}
 
-	token, err := auth.CreateToken(result.id, result.email)
+	token, err := auth.CreateToken(result.id)
 	if err != nil {
 		return output, err
 	}
@@ -43,18 +33,18 @@ type registerEmailOutput struct {
 	created bool
 }
 
-func (b *backend) registerEmail(ctx context.Context, input AuthInput) (*registerEmailOutput, error) {
+func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (*registerEmailOutput, error) {
 	existingAccount, err := b.repository.Account.GetByEmail(ctx, input.Email)
-	if err != nil {
+	if err != nil && err != domain.ErrNotFound {
 		return nil, err
 	}
 
 	// sign in if account already exists
-	if existingAccount != nil {
+	if !existingAccount.IsZero() {
 		matched := existingAccount.CheckPassword(input.Password)
 
 		if !matched {
-			return nil, commonerrors.InvalidCredentials()
+			return nil, apperrors.InvalidCredentials()
 		}
 
 		return &registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}, nil
@@ -65,7 +55,7 @@ func (b *backend) registerEmail(ctx context.Context, input AuthInput) (*register
 		return nil, err
 	}
 
-	createdAccount, err := b.repository.Account.Create(ctx, account)
+	createdAccount, err := b.repository.Account.Save(ctx, account)
 	if err != nil {
 		return nil, err
 	}

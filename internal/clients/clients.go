@@ -3,10 +3,10 @@ package clients
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/config"
-	"github.com/HotPotatoC/roadmap_gen/pkg/database"
-	"github.com/HotPotatoC/roadmap_gen/pkg/openai"
 	"github.com/pkg/errors"
+	"github.com/roadmap-thesis/backend/pkg/config"
+	"github.com/roadmap-thesis/backend/pkg/database"
+	"github.com/roadmap-thesis/backend/pkg/openai"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )

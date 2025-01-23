@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/internal/domain/object"
+	"github.com/roadmap-thesis/backend/internal/domain/object"
 )
 
 const (
@@ -15,6 +15,8 @@ type Account struct {
 	Name     string
 	Email    string
 	Password object.Password
+
+	Roadmaps []*Roadmap
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -33,22 +35,28 @@ func NewAccount(name, email, plainPassword string) (*Account, error) {
 	}
 
 	account := &Account{
-		Name:     name,
-		Email:    email,
-		Password: hash,
+		Name:      name,
+		Email:     email,
+		Password:  hash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	return account, nil
+}
+
+func (e *Account) IsZero() bool {
+	return e.ID == 0
+}
+
+func (e *Account) CheckPassword(password string) bool {
+	return e.Password.Compare(password)
 }
 
 func (e *Account) Update(name, email string) {
 	e.Name = name
 	e.Email = email
 	e.UpdateChangelog()
-}
-
-func (e *Account) CheckPassword(password string) bool {
-	return e.Password.Compare(password)
 }
 
 func (e *Account) UpdateChangelog() {

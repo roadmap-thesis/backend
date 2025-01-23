@@ -4,9 +4,9 @@ help: ## Displays all the available commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 .PHONY: help
 
-app: ## Runs the application
+run: ## Runs the application
 	@go run cmd/app/main.go
-.PHONY: app
+.PHONY: run
 
 migrate: ## Migrates the database to the most recent version
 	@go run cmd/migrate/main.go -command up
@@ -33,6 +33,15 @@ test: ## Runs tests
 		./... \
 		-coverprofile=./coverage/coverage.out
 .PHONY: test
+
+bench: ## Runs benchmarks
+	@go test \
+		-tags=benchmark \
+		-bench=. \
+		-benchmem \
+		-run=^$$ \
+		./...
+.PHONY: bench
 
 coverage: ## Shows the coverage of the tests
 	@go tool cover -html=./coverage/coverage.out -o=./coverage/coverage.html

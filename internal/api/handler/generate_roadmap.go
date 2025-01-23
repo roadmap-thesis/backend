@@ -7,8 +7,8 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/render"
 )
 
-func (h *Handler) Auth(c echo.Context) error {
-	var input io.AuthInput
+func (h *Handler) GenerateRoadmap(c echo.Context) error {
+	var input io.GenerateRoadmapInput
 
 	if err := c.Bind(&input); err != nil {
 		return apperrors.InvalidData()
@@ -18,14 +18,10 @@ func (h *Handler) Auth(c echo.Context) error {
 		return err
 	}
 
-	output, err := h.backend.Auth(c.Request().Context(), input)
+	output, err := h.backend.GenerateRoadmap(c.Request().Context(), input)
 	if err != nil {
 		return err
 	}
 
-	if output.Created {
-		return render.Created(c, "Successfully registered.", output)
-	} else {
-		return render.OK(c, "Successfully logged in.", output)
-	}
+	return render.Created(c, "Roadmap generated successfully", output)
 }

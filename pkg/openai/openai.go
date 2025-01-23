@@ -3,7 +3,7 @@ package openai
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/config"
+	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/sashabaranov/go-openai"
@@ -21,17 +21,22 @@ func NewClient() *Client {
 	}
 }
 
-func (o *Client) Chat(ctx context.Context, prompt string) (*openai.ChatCompletionResponse, error) {
+type ChatPrompt struct {
+	System string
+	User   string
+}
+
+func (o *Client) Chat(ctx context.Context, prompt ChatPrompt) (*openai.ChatCompletionResponse, error) {
 	response, err := o.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: config.OpenAiModel(),
 		Messages: []openai.ChatCompletionMessage{
 			{
-				Role:    "system",
-				Content: "You are a helpful assistant/teacher/mentor with broad knowledge on many topics.",
+				Role:    openai.ChatMessageRoleSystem,
+				Content: prompt.System,
 			},
 			{
-				Role:    "account",
-				Content: prompt,
+				Role:    openai.ChatMessageRoleUser,
+				Content: prompt.User,
 			},
 		},
 	})

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/config"
+	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/stretchr/testify/assert"
 )
 

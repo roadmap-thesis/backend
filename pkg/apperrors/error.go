@@ -1,8 +1,9 @@
-package commonerrors
+package apperrors
 
 type AppError struct {
 	code    int
 	message string
+	err     error
 }
 
 func (e AppError) Code() int {

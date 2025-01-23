@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/HotPotatoC/roadmap_gen/pkg/render"
 	"github.com/labstack/echo/v4"
+	"github.com/roadmap-thesis/backend/pkg/render"
 )
 
 func (h *Handler) HealthCheck(c echo.Context) error {

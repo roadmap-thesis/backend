@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
-	"github.com/HotPotatoC/roadmap_gen/pkg/render"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/roadmap-thesis/backend/pkg/apperrors"
+	"github.com/roadmap-thesis/backend/pkg/render"
 )
 
 func (h *Handler) ErrorHandler(err error, c echo.Context) {
@@ -17,11 +17,11 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 
 	code := http.StatusInternalServerError
 	switch e := err.(type) {
-	case *commonerrors.AppError:
+	case *apperrors.AppError:
 		code = e.Code()
 	case *echo.HTTPError:
 		if e.Code == http.StatusNotFound {
-			err = commonerrors.ResourceNotFound("Path")
+			err = apperrors.ResourceNotFound("Path")
 		}
 		code = e.Code
 	}

@@ -3,29 +3,21 @@ package backend
 import (
 	"context"
 
-	"github.com/HotPotatoC/roadmap_gen/pkg/auth"
-	"github.com/HotPotatoC/roadmap_gen/pkg/commonerrors"
+	"github.com/roadmap-thesis/backend/internal/io"
+	"github.com/roadmap-thesis/backend/pkg/auth"
 )
 
-type ProfileOutput struct {
-	ID   int
-	Name string
-}
+func (b *backend) Profile(ctx context.Context) (io.ProfileOutput, error) {
+	auth := auth.FromContext(ctx)
 
-func (b *backend) Profile(ctx context.Context) (ProfileOutput, error) {
-	identity := auth.FromContext(ctx)
-
-	account, err := b.repository.Account.GetByID(ctx, identity.ID)
+	account, err := b.repository.Account.GetByID(ctx, auth.ID)
 	if err != nil {
-		return ProfileOutput{}, err
+		return io.ProfileOutput{}, err
 	}
 
-	if account == nil {
-		return ProfileOutput{}, commonerrors.ResourceNotFound("Account")
-	}
-
-	return ProfileOutput{
-		ID:   account.ID,
-		Name: account.Name,
+	return io.ProfileOutput{
+		ID:    account.ID,
+		Name:  account.Name,
+		Email: account.Email,
 	}, nil
 }
