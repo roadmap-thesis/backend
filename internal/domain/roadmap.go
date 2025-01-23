@@ -35,7 +35,8 @@ func NewRoadmap(accountID int, title, description string) *Roadmap {
 	}
 }
 
-func MapTopicsToRoadmap(roadmap *Roadmap, topics []*Topic) {
+// TODO: this does not feel right. temporary solution
+func (e *Roadmap) MapTopicsToRoadmap(topics []*Topic) {
 	topicMap := make(map[int]*Topic)
 	currParentID := 0
 	for _, topic := range topics {
@@ -59,7 +60,7 @@ func MapTopicsToRoadmap(roadmap *Roadmap, topics []*Topic) {
 		}
 	}
 
-	roadmap.Topics = topics
+	e.Topics = topics
 }
 
 func (e *Roadmap) IsZero() bool {
