@@ -17,13 +17,13 @@ type Backend interface {
 }
 
 type backend struct {
-	openai     *openai.Client
 	repository *repository.Repository
+	openai     *openai.Client
 }
 
-func New(openai *openai.Client, repository *repository.Repository) Backend {
+func New(repository *repository.Repository, openai *openai.Client) Backend {
 	return &backend{
-		openai:     openai,
 		repository: repository,
+		openai:     openai,
 	}
 }

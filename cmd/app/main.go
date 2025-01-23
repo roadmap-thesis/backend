@@ -28,7 +28,7 @@ func main() {
 
 	log.Info().Msg("Bootstrapping application...")
 	repository := repository.New(clients.DB)
-	backend := backend.New(clients.OpenAI, repository)
+	backend := backend.New(repository, clients.OpenAI)
 	api := api.New(config.Port(), backend)
 
 	log.Info().Msg("Starting API server...")
