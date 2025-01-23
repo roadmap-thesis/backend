@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/roadmap-thesis/backend/pkg/slug"
+	"github.com/roadmap-thesis/backend/pkg/str"
 )
 
 const (
@@ -29,7 +30,7 @@ type Topic struct {
 func NewTopic(title, description string) *Topic {
 	return &Topic{
 		Title:       title,
-		Slug:        slug.Make(title),
+		Slug:        slug.Make(title + " " + str.Random(5)),
 		Description: description,
 		Finished:    false,
 		CreatedAt:   time.Now(),

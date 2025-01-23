@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/roadmap-thesis/backend/pkg/slug"
+	"github.com/roadmap-thesis/backend/pkg/str"
 )
 
 const (
@@ -28,7 +29,7 @@ func NewRoadmap(accountID int, title, description string) *Roadmap {
 	return &Roadmap{
 		AccountID:   accountID,
 		Title:       title,
-		Slug:        slug.Make(title),
+		Slug:        slug.Make(title + " " + str.Random(5)),
 		Description: description,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
