@@ -142,7 +142,6 @@ func (b *backend) makeGenerateRoadmapSystemPrompt() string {
 
 # Example Format:
 
-"""
 {
   "title": "Example Topic",
   "description": "An extensive overview of the topic to set the stage for learning.",
@@ -163,9 +162,8 @@ func (b *backend) makeGenerateRoadmapSystemPrompt() string {
     }
   ]
 }
-"""
 
-The roadmap must adhere to this format while reflecting the user's provided topic and personalization preferences. Do not use markdown symbols such as the triple backticks, you must only respond with the raw json itself.
+The roadmap must adhere to this format while reflecting the user's provided topic and personalization preferences. Do not use markdown symbols such as the triple backticks or quotes, you must only respond with the raw json itself.
 
 # A Real Case Example:
 
@@ -178,7 +176,6 @@ The roadmap must adhere to this format while reflecting the user's provided topi
 
 ### Output:
 
-"""
 {
   "title": "Front End Development",
   "description": "Step by step guide to learn  frontend development.",
@@ -234,6 +231,5 @@ The roadmap must adhere to this format while reflecting the user's provided topi
 	... more topics
   ]
 }
-"""
 `
 }
