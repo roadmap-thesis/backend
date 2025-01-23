@@ -5,8 +5,8 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/render"
 )
 
-func (h *Handler) Profile(c echo.Context) error {
-	output, err := h.backend.Profile(c.Request().Context())
+func (h *Handler) GetProfile(c echo.Context) error {
+	output, err := h.backend.GetProfile(c.Request().Context())
 	if err != nil {
 		return err
 	}

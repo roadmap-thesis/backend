@@ -7,7 +7,7 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/auth"
 )
 
-func (b *backend) Profile(ctx context.Context) (io.ProfileOutput, error) {
+func (b *backend) GetProfile(ctx context.Context) (io.ProfileOutput, error) {
 	auth := auth.FromContext(ctx)
 
 	account, err := b.repository.Account.GetByID(ctx, auth.ID)
