@@ -9,14 +9,14 @@ import (
 	"github.com/roadmap-thesis/backend/internal/domain"
 	"github.com/roadmap-thesis/backend/internal/io"
 	"github.com/roadmap-thesis/backend/pkg/auth"
-	"github.com/roadmap-thesis/backend/pkg/openai"
+	"github.com/roadmap-thesis/backend/pkg/llm"
 	"github.com/rs/zerolog/log"
 )
 
 func (b *backend) GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapInput) (io.GenerateRoadmapOutput, error) {
 	var output io.GenerateRoadmapOutput
 
-	generated, err := b.openAiChatGenerateRoadmap(ctx, openai.ChatPrompt{
+	generated, err := b.chatGeneratePrompt(ctx, llm.ChatPrompt{
 		System: b.makeGenerateRoadmapSystemPrompt(),
 		User:   b.makeGenerateRoadmapUserPrompt(input),
 	})
@@ -48,33 +48,36 @@ func (b *backend) GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapI
 	return output, nil
 }
 
-type openAiChatGenerateRoadmapPromptResult struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Topics      []struct {
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Subtopics   []struct {
-			Title       string `json:"title"`
-			Description string `json:"description"`
-		} `json:"subtopics"`
-	} `json:"topics"`
+type chatGeneratePromptPromptResult struct {
+	Title       string                                `json:"title"`
+	Description string                                `json:"description"`
+	Topics      []chatGeneratePromptPromptResultTopic `json:"topics"`
 }
 
-func (b *backend) openAiChatGenerateRoadmap(ctx context.Context, prompt openai.ChatPrompt) (openAiChatGenerateRoadmapPromptResult, error) {
+type chatGeneratePromptPromptResultTopic struct {
+	Title       string                                   `json:"title"`
+	Description string                                   `json:"description"`
+	Subtopics   []chatGeneratePromptPromptResultSubtopic `json:"subtopics"`
+}
+
+type chatGeneratePromptPromptResultSubtopic struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+func (b *backend) chatGeneratePrompt(ctx context.Context, prompt llm.ChatPrompt) (chatGeneratePromptPromptResult, error) {
 	fmt.Println(prompt.User)
-	completionResponse, err := b.openai.Chat(ctx, prompt)
+	content, err := b.llm.Chat(ctx, prompt)
 	if err != nil {
-		return openAiChatGenerateRoadmapPromptResult{}, err
+		return chatGeneratePromptPromptResult{}, err
 	}
 
-	var result openAiChatGenerateRoadmapPromptResult
-	content := completionResponse.Choices[0].Message.Content
+	var result chatGeneratePromptPromptResult
 
 	log.Debug().Msg(content)
 
 	if err := json.Unmarshal([]byte(content), &result); err != nil {
-		return openAiChatGenerateRoadmapPromptResult{}, err
+		return chatGeneratePromptPromptResult{}, err
 	}
 
 	return result, nil
@@ -112,116 +115,154 @@ func (b *backend) makeGenerateRoadmapUserPrompt(input io.GenerateRoadmapInput) s
 }
 
 func (b *backend) makeGenerateRoadmapSystemPrompt() string {
-	return `You are an expert in creating structured learning roadmaps for a learning application. The roadmaps you generate are designed to provide users with a clear and organized path for self-learning, not as a course or detailed content provider. The roadmap will:
+	var sb strings.Builder
+
+	promptUserPersonalizationOptions := []string{
+		"Daily Time Availability: How much time the user can dedicate daily (e.g., 15 minutes, 30 minutes, 1 hour).",
+		"Total Duration: The overall duration of the roadmap (e.g., 1 week, 3 months).",
+		"Skill Level: The user's experience level (e.g., Beginner, Intermediate, Advanced).",
+		"Additional Info: Any other user-provided goals or preferences. This is Optional for the user.",
+	}
+
+	promptSystemGuidelines := []string{
+		"Go into detail about the main topic to provide a comprehensive overview of the subject.",
+		"Each topic should have a title and a brief description to explain the focus of that section.",
+		"Subtopics should be related to the main topic and provide more detailed information on specific aspects of the subject.",
+		"Each description should be clear and informative. It should be long enough to explain the topic but concise enough to maintain the user's interest.",
+		"Ensure that a topic is broken down into manageable subtopics to help users understand the subject better whenever possible.",
+		"A topic can also not have any subtopics if it is a standalone subject.",
+		"Ensure the roadmap is concise, user-friendly, and structured for easy navigation.",
+		"Use only English language for the roadmap.",
+		"Use plain and neutral language suitable for learners of all backgrounds.",
+	}
+
+	exampleFormat := chatGeneratePromptPromptResult{
+		Title:       "Example Topic",
+		Description: "An extensive overview of the topic to set the stage for learning.",
+		Topics: []chatGeneratePromptPromptResultTopic{
+			{
+				Title:       "Main Topic",
+				Description: "A one paragraph long explanation of the main topic.",
+				Subtopics: []chatGeneratePromptPromptResultSubtopic{
+					{
+						Title:       "Subtopic 1",
+						Description: "A one paragraph long explanation of Subtopic 1.",
+					},
+					{
+						Title:       "Subtopic 2",
+						Description: "A one paragraph long explanation of Subtopic 2.",
+					},
+				},
+			},
+		},
+	}
+
+	exampleResult := chatGeneratePromptPromptResult{
+		Title:       "Front End Development",
+		Description: "Step by step guide to learn  frontend development.",
+		Topics: []chatGeneratePromptPromptResultTopic{
+			{
+				Title:       "What Is Front End Dev?",
+				Description: "Front end development is the practice of producing HTML, CSS, and JavaScript for a website or web application so a user can see and interact with them directly. It involves the design of the site, the layout, the colors, the fonts, and so on.",
+				Subtopics: []chatGeneratePromptPromptResultSubtopic{
+					{
+						Title:       "HTML",
+						Description: "HTML is the standard markup language for creating web pages and web applications. It provides the basic structure of sites, which is enhanced and modified by other technologies like CSS and JavaScript.",
+					},
+					{
+						Title:       "CSS",
+						Description: "CSS is a style sheet language used for describing the presentation of a document written in HTML. It controls the layout of multiple web pages all at once.",
+					},
+					{
+						Title:       "JavaScript",
+						Description: "JavaScript is a programming language that enables you to interact with elements on a webpage. It is used for creating dynamic and interactive web pages.",
+					},
+					{
+						Title:       "Responsive Design",
+						Description: "Responsive design is an approach to web design that makes web pages render well on a variety of devices and window or screen sizes.",
+					},
+				},
+			},
+			{
+				Title:       "JavaScript Frameworks and Libraries",
+				Description: "JavaScript frameworks and libraries are pre-written JavaScript code that helps you build interactive web applications. They provide ready-to-use functions and components that you can use in your code.",
+				Subtopics: []chatGeneratePromptPromptResultSubtopic{
+					{
+						Title:       "React",
+						Description: "React is a JavaScript library for building user interfaces. It is maintained by Facebook and a community of individual developers and companies.",
+					},
+					{
+						Title:       "Vue.js",
+						Description: "Vue.js is a progressive JavaScript framework used to build interactive web interfaces. It is designed from the ground up to be incrementally adoptable.",
+					},
+					{
+						Title:       "Angular",
+						Description: "Angular is a platform and framework for building single-page client applications using HTML and TypeScript. It is maintained by Google.",
+					},
+					{
+						Title:       "Svelte",
+						Description: "Svelte is a radical new approach to building user interfaces. It shifts the work of rendering from the browser to the compile step, resulting in faster load times and a better user experience.",
+					},
+					{
+						Title:       "Node.js",
+						Description: "Node.js is an open-source, cross-platform, JavaScript runtime environment that executes JavaScript code outside a web browser. It is used to build scalable network applications.",
+					},
+				},
+			},
+		},
+	}
+
+	sb.WriteString(`You are an expert in creating structured learning roadmaps for a learning application. The roadmaps you generate are designed to provide users with a clear and organized path for self-learning, not as a course or detailed content provider. The roadmap will:
 1. Include a title and description of the main topic to introduce the subject.
 2. Break down the topic into topics and subtopics, each with a title and description to explain the focus of the section.
 3. Use a maximum of 2 levels of depth for subtopics. Topics can contain subtopics, but subtopics cannot have further nested levels.
 4. Be tailored based on user-provided personalization options:
-   - Daily Time Availability: How much time the user can dedicate daily (e.g., 15 minutes, 30 minutes, 1 hour).
-   - Total Duration: The overall duration of the roadmap (e.g., 1 week, 3 months).
-   - Skill Level: The user's experience level (e.g., Beginner, Intermediate, Advanced).
-   - Additional Info: Any other user-provided goals or preferences. This is Optional for the user.
+`)
 
-### Guidelines:
-- Go into detail about the main topic to provide a comprehensive overview of the subject.
-- Each topic should have a title and a brief description to explain the focus of that section.
-- Subtopics should be related to the main topic and provide more detailed information on specific aspects of the subject.
-- Each description should be clear and informative. It should be long enough to explain the topic but concise enough to maintain the user's interest.
-- Ensure that a topic is broken down into manageable subtopics to help users understand the subject better whenever possible.
-- A topic can also not have any subtopics if it is a standalone subject.
-- Ensure the roadmap is concise, user-friendly, and structured for easy navigation.
-- Use only English language for the roadmap.
-- Use plain and neutral language suitable for learners of all backgrounds.
+	for _, userPersonalizationOpt := range promptUserPersonalizationOptions {
+		sb.WriteString(" - ")
+		sb.WriteString(userPersonalizationOpt)
+		sb.WriteString("\n")
+	}
 
-# Example Format:
+	sb.WriteString("# Guidelines:\n")
+	for _, guideline := range promptSystemGuidelines {
+		sb.WriteString(" - ")
+		sb.WriteString(guideline)
+		sb.WriteString("\n")
+	}
 
-{
-  "title": "Example Topic",
-  "description": "An extensive overview of the topic to set the stage for learning.",
-  "topics": [
-    {
-      "title": "Main Topic",
-      "description": "A one paragraph long explanation of the main topic.",
-      "subtopics": [
-        {
-          "title": "Subtopic 1",
-          "description": "A one paragraph long explanation of Subtopic 1."
-        },
-        {
-          "title": "Subtopic 2",
-          "description": "A one paragraph long explanation of Subtopic 2."
-        }
-      ]
-    }
-  ]
-}
+	sb.WriteString("# Example Format:\n")
 
-The roadmap must adhere to this format while reflecting the user's provided topic and personalization preferences. Do not use markdown symbols such as the triple backticks or quotes, you must only respond with the raw json itself.
+	exampleFormatJson, err := json.MarshalIndent(exampleFormat, "", "    ")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to marshal example format")
+		return ""
+	}
 
-# A Real Case Example:
+	sb.Write(exampleFormatJson)
 
-### Input:
-- Topic: Front End Development
-- Daily Time Availability: 1 hour/day
-- Total Duration: 1 month
-- Skill Level: beginner
+	sb.WriteString("\n")
+	sb.WriteString("The roadmap must adhere to this format while reflecting the user's provided topic and personalization preferences. Do not use markdown symbols such as the triple backticks or quotes, you must only respond with the raw json itself.")
+	sb.WriteString("\n")
 
-### Output:
+	sb.WriteString("# A Real Case Example:\n")
 
-{
-  "title": "Front End Development",
-  "description": "Step by step guide to learn  frontend development.",
-  "topics": [
-    {
-      "title": "What Is Front End Dev?",
-      "description": "Front end development is the practice of producing HTML, CSS, and JavaScript for a website or web application so a user can see and interact with them directly. It involves the design of the site, the layout, the colors, the fonts, and so on.",
-      "subtopics": [
-        {
-          "title": "HTML",
-		  "description": "HTML is the standard markup language for creating web pages and web applications. It provides the basic structure of sites, which is enhanced and modified by other technologies like CSS and JavaScript."
-        },
-        {
-          "title": "CSS",
-		  "description": "CSS is a style sheet language used for describing the presentation of a document written in HTML. It controls the layout of multiple web pages all at once."
-        },
-		{
-		  "title": "JavaScript",
-		  "description": "JavaScript is a programming language that enables you to interact with elements on a webpage. It is used for creating dynamic and interactive web pages."
-		},
-		{
-		  "title": "Responsive Design",
-		  "description": "Responsive design is an approach to web design that makes web pages render well on a variety of devices and window or screen sizes."
-		}
-	  ]
-    },
-	{
-	  "title": "JavaScript Frameworks and Libraries",
-	  "description": "JavaScript frameworks and libraries are pre-written JavaScript code that helps you build interactive web applications. They provide ready-to-use functions and components that you can use in your code.",
-	  "subtopics": [
-		{
-		  "title": "React",
-		  "description": "React is a JavaScript library for building user interfaces. It is maintained by Facebook and a community of individual developers and companies."
-		},
-		{
-		  "title": "Vue.js",
-		  "description": "Vue.js is a progressive JavaScript framework used to build interactive web interfaces. It is designed from the ground up to be incrementally adoptable."
-		},
-		{
-		  "title": "Angular",
-		  "description": "Angular is a platform and framework for building single-page client applications using HTML and TypeScript. It is maintained by Google."
-		},
-		{
-		  "title": "Svelte",
-		  "description": "Svelte is a radical new approach to building user interfaces. It shifts the work of rendering from the browser to the compile step, resulting in faster load times and a better user experience."
-		},
-		{
-		  "title": "Node.js",
-		  "description": "Node.js is an open-source, cross-platform, JavaScript runtime environment that executes JavaScript code outside a web browser. It is used to build scalable network applications."
-		}
-	  ]
-	},
-	... more topics
-  ]
-}
-`
+	sb.WriteString("### Input:\n")
+	sb.WriteString("- Topic: Front End Development\n")
+	sb.WriteString("- Daily Time Availability: 1 hour/day\n")
+	sb.WriteString("- Total Duration: 1 month\n")
+	sb.WriteString("- Skill Level: beginner\n")
+
+	sb.WriteString("\n### Output:\n\n")
+
+	exampleResultJson, err := json.MarshalIndent(exampleResult, "", "    ")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to marshal example format")
+		return ""
+	}
+
+	sb.Write(exampleResultJson)
+
+	return sb.String()
 }

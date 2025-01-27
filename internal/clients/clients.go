@@ -6,19 +6,20 @@ import (
 	"github.com/pkg/errors"
 	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/roadmap-thesis/backend/pkg/database"
-	"github.com/roadmap-thesis/backend/pkg/openai"
+	"github.com/roadmap-thesis/backend/pkg/llm"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/sync/errgroup"
 )
 
 type Clients struct {
-	OpenAI *openai.Client
-	DB     database.Connection
+	LLM llm.Client
+	DB  database.Connection
 }
 
 func New(ctx context.Context) (*Clients, error) {
 	c := &Clients{
-		OpenAI: openai.NewClient(),
+		// LLM: llm.NewOpenAiClient(),
+		LLM: llm.NewDeepSeekClient(),
 	}
 
 	var group errgroup.Group

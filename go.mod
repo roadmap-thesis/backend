@@ -1,6 +1,6 @@
 module github.com/roadmap-thesis/backend
 
-go 1.23
+go 1.23.3
 
 toolchain go1.23.4
 
@@ -24,6 +24,7 @@ require (
 require (
 	github.com/aarondl/json v0.0.0-20221020222930-8b0db17ef1bf // indirect
 	github.com/aarondl/opt v0.0.0-20230114172057-b91f370c41f0 // indirect
+	github.com/cohesion-org/deepseek-go v0.0.0-20250124222348-4ca343ea1bd4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect

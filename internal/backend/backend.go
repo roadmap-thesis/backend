@@ -5,7 +5,7 @@ import (
 
 	"github.com/roadmap-thesis/backend/internal/io"
 	"github.com/roadmap-thesis/backend/internal/repository"
-	"github.com/roadmap-thesis/backend/pkg/openai"
+	"github.com/roadmap-thesis/backend/pkg/llm"
 )
 
 type Backend interface {
@@ -26,12 +26,12 @@ type Backend interface {
 
 type backend struct {
 	repository *repository.Repository
-	openai     *openai.Client
+	llm        llm.Client
 }
 
-func New(repository *repository.Repository, openai *openai.Client) Backend {
+func New(repository *repository.Repository, llm llm.Client) Backend {
 	return &backend{
 		repository: repository,
-		openai:     openai,
+		llm:        llm,
 	}
 }

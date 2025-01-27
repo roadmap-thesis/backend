@@ -3,6 +3,7 @@ package domain
 import (
 	"time"
 
+	"github.com/roadmap-thesis/backend/internal/domain/object"
 	"github.com/roadmap-thesis/backend/pkg/slug"
 	"github.com/roadmap-thesis/backend/pkg/str"
 )
@@ -18,8 +19,9 @@ type Roadmap struct {
 	Slug        string
 	Description string
 
-	Account Account
-	Topics  []*Topic
+	Account                Account
+	Topics                 []*Topic
+	PersonalizationOptions object.PersonalizationOptions
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -1,7 +1,8 @@
-package openai
+package llm
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/rs/zerolog"
@@ -9,24 +10,19 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type Client struct {
+type openAiClient struct {
 	client *openai.Client
 }
 
-func NewClient() *Client {
+func NewOpenAiClient() Client {
 	client := openai.NewClient(config.OpenAiAPIKey())
 
-	return &Client{
+	return &openAiClient{
 		client: client,
 	}
 }
 
-type ChatPrompt struct {
-	System string
-	User   string
-}
-
-func (o *Client) Chat(ctx context.Context, prompt ChatPrompt) (*openai.ChatCompletionResponse, error) {
+func (o *openAiClient) Chat(ctx context.Context, prompt ChatPrompt) (string, error) {
 	response, err := o.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: config.OpenAiModel(),
 		Messages: []openai.ChatCompletionMessage{
@@ -41,7 +37,7 @@ func (o *Client) Chat(ctx context.Context, prompt ChatPrompt) (*openai.ChatCompl
 		},
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	log.Info().Dict("openai_request", zerolog.Dict().
@@ -56,5 +52,9 @@ func (o *Client) Chat(ctx context.Context, prompt ChatPrompt) (*openai.ChatCompl
 		),
 	).Msg("OpenAI chat request")
 
-	return &response, nil
+	if len(response.Choices) == 0 {
+		return "", fmt.Errorf("openai: no choices in response")
+	}
+
+	return response.Choices[0].Message.Content, nil
 }

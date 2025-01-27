@@ -21,6 +21,9 @@ type Config struct {
 
 	OpenAiAPIKey string
 	OpenAiModel  string
+
+	DeepSeekAPIKey string
+	DeepSeekModel  string
 }
 
 var config *Config
@@ -45,6 +48,9 @@ func Init() {
 
 		OpenAiAPIKey: LookupEnv("OPENAI_API_KEY", ""),
 		OpenAiModel:  LookupEnv("OPENAI_MODEL", "gpt-4o-mini"),
+
+		DeepSeekAPIKey: LookupEnv("DEEPSEEK_API_KEY", ""),
+		DeepSeekModel:  LookupEnv("DEEPSEEK_MODEL", "deepseek-chat"),
 	}
 }
 
@@ -63,14 +69,20 @@ func DatabaseMaxConnIdleTime() time.Duration          { return config.DatabaseMa
 func DatabaseHealthCheckPeriod() time.Duration        { return config.DatabaseHealthCheckPeriod }
 func DatabaseDefaultConnectionTimeout() time.Duration { return config.DatabaseDefaultConnectionTimeout }
 
+func JWTSecretKey() string              { return config.JWTSecretKey }
+func JWTSecretExpiresIn() time.Duration { return config.JWTSecretExpiresIn }
+
+func SetJWTSecretKey(key string)                   { config.JWTSecretKey = key }
+func SetJWTSecretExpiresIn(duration time.Duration) { config.JWTSecretExpiresIn = duration }
+
 func OpenAiAPIKey() string { return config.OpenAiAPIKey }
 func OpenAiModel() string  { return config.OpenAiModel }
 
 func SetOpenAiAPIKey(key string)  { config.OpenAiAPIKey = key }
 func SetOpenAiModel(model string) { config.OpenAiModel = model }
 
-func JWTSecretKey() string              { return config.JWTSecretKey }
-func JWTSecretExpiresIn() time.Duration { return config.JWTSecretExpiresIn }
+func DeepSeekAPIKey() string { return config.DeepSeekAPIKey }
+func DeepSeekModel() string  { return config.DeepSeekModel }
 
-func SetJWTSecretKey(key string)                   { config.JWTSecretKey = key }
-func SetJWTSecretExpiresIn(duration time.Duration) { config.JWTSecretExpiresIn = duration }
+func SetDeepSeekAPIKey(key string)  { config.DeepSeekAPIKey = key }
+func SetDeepSeekModel(model string) { config.DeepSeekModel = model }
