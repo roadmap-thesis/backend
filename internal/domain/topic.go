@@ -39,7 +39,16 @@ func NewTopic(title, description string) *Topic {
 }
 
 func (e *Topic) IsZero() bool {
-	return e.ID == 0
+	return e.ID == 0 &&
+		e.RoadmapID == 0 &&
+		e.ParentID == 0 &&
+		e.Title == "" &&
+		e.Slug == "" &&
+		e.Description == "" &&
+		e.Order == 0 &&
+		e.Finished == false &&
+		e.CreatedAt.IsZero() &&
+		e.UpdatedAt.IsZero()
 }
 
 func (e *Topic) IsParent() bool {

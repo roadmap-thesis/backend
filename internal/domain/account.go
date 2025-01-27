@@ -46,7 +46,12 @@ func NewAccount(name, email, plainPassword string) (*Account, error) {
 }
 
 func (e *Account) IsZero() bool {
-	return e.ID == 0
+	return e.ID == 0 &&
+		e.Name == "" &&
+		e.Email == "" &&
+		e.Password == "" &&
+		e.CreatedAt.IsZero() &&
+		e.UpdatedAt.IsZero()
 }
 
 func (e *Account) CheckPassword(password string) bool {

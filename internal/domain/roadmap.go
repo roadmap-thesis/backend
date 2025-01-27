@@ -67,7 +67,16 @@ func (e *Roadmap) MapTopicsToRoadmap(topics []*Topic) {
 }
 
 func (e *Roadmap) IsZero() bool {
-	return e.ID == 0
+	return e.ID == 0 &&
+		e.AccountID == 0 &&
+		e.Title == "" &&
+		e.Slug == "" &&
+		e.Description == "" &&
+		e.Account.IsZero() &&
+		e.Topics == nil &&
+		e.PersonalizationOptions == object.PersonalizationOptions{} &&
+		e.CreatedAt.IsZero() &&
+		e.UpdatedAt.IsZero()
 }
 
 func (e *Roadmap) TotalTopics() int {
