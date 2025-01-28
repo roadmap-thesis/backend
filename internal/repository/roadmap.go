@@ -40,7 +40,7 @@ func (r *RoadmapRepository) GetBySlug(ctx context.Context, slug string) (domain.
 		return domain.Roadmap{}, err
 	}
 
-	roadmap.MapTopicsToRoadmap(topics)
+	roadmap.SetTopics(topics)
 
 	return roadmap, nil
 }

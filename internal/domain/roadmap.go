@@ -37,34 +37,6 @@ func NewRoadmap(accountID int, title, description string) *Roadmap {
 	}
 }
 
-// TODO: this does not feel right. temporary solution
-func (e *Roadmap) MapTopicsToRoadmap(topics []*Topic) {
-	topicMap := make(map[int]*Topic)
-	currParentID := 0
-	for _, topic := range topics {
-		if topic.IsParent() {
-			continue
-		}
-
-		if topic.IsChild() && currParentID == topic.ParentID {
-			if currParentID == topic.ParentID {
-				continue
-			}
-
-			topicMap[topic.ParentID].Subtopics = topic.Subtopics
-			currParentID = topic.ParentID
-		}
-	}
-
-	for _, topic := range topics {
-		if topic.HasSubtopics() {
-			topic.Subtopics = topicMap[topic.ID].Subtopics
-		}
-	}
-
-	e.Topics = topics
-}
-
 func (e *Roadmap) IsZero() bool {
 	return e.ID == 0 &&
 		e.AccountID == 0 &&
@@ -124,6 +96,10 @@ func (e *Roadmap) calculateCompletionPercentage(topics []*Topic, totalTopics int
 
 func (e *Roadmap) SetCreator(acc Account) {
 	e.Account = acc
+}
+
+func (e *Roadmap) SetTopics(topics []*Topic) {
+	e.Topics = topics
 }
 
 func (e *Roadmap) SetPersonalizationOptions(opts *PersonalizationOptions) {
