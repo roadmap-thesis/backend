@@ -72,7 +72,7 @@ func (e *Roadmap) IsZero() bool {
 		e.Slug == "" &&
 		e.Description == "" &&
 		e.Account.IsZero() &&
-		e.Topics == nil &&
+		(e.Topics == nil || len(e.Topics) == 0) &&
 		e.PersonalizationOptions.IsZero() &&
 		e.CreatedAt.IsZero() &&
 		e.UpdatedAt.IsZero()
