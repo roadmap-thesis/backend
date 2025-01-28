@@ -49,8 +49,20 @@ func (r *AccountRepository) GetByEmail(ctx context.Context, filter string) (doma
 
 func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) ([]domain.Account, error) {
 	query, args := psql.Select(
-		sm.Columns("id", "name", "email", "password", "created_at", "updated_at"),
+		sm.Columns(
+			psql.Quote(domain.AccountTable, "id"),
+			psql.Quote(domain.AccountTable, "email"),
+			psql.Quote(domain.AccountTable, "password"),
+			psql.Quote(domain.AccountTable, "created_at"),
+			psql.Quote(domain.AccountTable, "updated_at"),
+			psql.Quote(domain.ProfileTable, "id"),
+			psql.Quote(domain.ProfileTable, "name"),
+			psql.Quote(domain.ProfileTable, "avatar"),
+			psql.Quote(domain.ProfileTable, "created_at"),
+			psql.Quote(domain.ProfileTable, "updated_at"),
+		),
 		sm.From(domain.AccountTable),
+		sm.LeftJoin(domain.ProfileTable).Using("id"),
 		sm.Where(psql.Quote(col).EQ(psql.Arg(args...))),
 	).MustBuild(ctx)
 
@@ -63,11 +75,24 @@ func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) 
 	var accounts []domain.Account
 	for rows.Next() {
 		var account domain.Account
-		err := rows.Scan(&account.ID, &account.Name, &account.Email, &account.Password, &account.CreatedAt, &account.UpdatedAt)
+		var profile domain.Profile
+		err := rows.Scan(
+			&account.ID,
+			&account.Email,
+			&account.Password,
+			&account.CreatedAt,
+			&account.UpdatedAt,
+			&profile.ID,
+			&profile.Name,
+			&profile.Avatar,
+			&profile.CreatedAt,
+			&profile.UpdatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
 
+		account.SetProfile(&profile)
 		accounts = append(accounts, account)
 	}
 
@@ -79,21 +104,35 @@ func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) 
 }
 
 func (r *AccountRepository) Save(ctx context.Context, input *domain.Account) (domain.Account, error) {
-	query, args := psql.Insert(
-		im.Into(domain.AccountTable, "name", "email", "password", "created_at", "updated_at"),
-		im.Values(psql.Arg(input.Name, input.Email, input.Password, input.CreatedAt, input.UpdatedAt)),
-		im.Returning("id", "name", "email", "created_at", "updated_at"),
-	).MustBuild(ctx)
-
 	var account domain.Account
 	err := r.db.InTx(ctx, func(tx pgx.Tx) error {
-		return tx.QueryRow(ctx, query, args...).Scan(
+		saveAccountQuery, saveAccountArgs := psql.Insert(
+			im.Into(domain.AccountTable, "email", "password", "created_at", "updated_at"),
+			im.Values(psql.Arg(input.Email, input.Password, input.CreatedAt, input.UpdatedAt)),
+			im.Returning("id", "email", "created_at", "updated_at"),
+		).MustBuild(ctx)
+
+		err := tx.QueryRow(ctx, saveAccountQuery, saveAccountArgs...).Scan(
 			&account.ID,
-			&account.Name,
 			&account.Email,
 			&account.CreatedAt,
 			&account.UpdatedAt,
 		)
+		if err != nil {
+			return err
+		}
+
+		saveProfileQuery, saveProfileArgs := psql.Insert(
+			im.Into(domain.ProfileTable, "id", "name", "avatar", "created_at", "updated_at"),
+			im.Values(psql.Arg(account.ID, input.Profile.Name, input.Profile.Avatar, input.CreatedAt, input.UpdatedAt)),
+		).MustBuild(ctx)
+
+		_, err = tx.Exec(ctx, saveProfileQuery, saveProfileArgs...)
+		if err != nil {
+			return err
+		}
+
+		return nil
 	})
 	if err != nil {
 		return domain.Account{}, err

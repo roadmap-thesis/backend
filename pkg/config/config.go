@@ -1,6 +1,10 @@
 package config
 
-import "time"
+import (
+	"time"
+
+	"github.com/cohesion-org/deepseek-go"
+)
 
 // Config is the global config for the application
 type Config struct {
@@ -50,7 +54,7 @@ func Init() {
 		OpenAiModel:  LookupEnv("OPENAI_MODEL", "gpt-4o-mini"),
 
 		DeepSeekAPIKey: LookupEnv("DEEPSEEK_API_KEY", ""),
-		DeepSeekModel:  LookupEnv("DEEPSEEK_MODEL", "deepseek-chat"),
+		DeepSeekModel:  LookupEnv("DEEPSEEK_MODEL", deepseek.DeepSeekChat),
 	}
 }
 

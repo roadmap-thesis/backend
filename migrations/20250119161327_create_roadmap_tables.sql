@@ -5,11 +5,9 @@ CREATE TABLE IF NOT EXISTS roadmaps(
   "title" character varying(255) NOT NULL,
   "slug" character varying(255) NOT NULL,
   "description" text NOT NULL,
-  "created_at" timestamp(0) without time zone DEFAULT now() NOT NULL,
-  "updated_at" timestamp(0) without time zone DEFAULT now() NOT NULL
+  "created_at" timestamp without time zone DEFAULT now() NOT NULL,
+  "updated_at" timestamp without time zone DEFAULT now() NOT NULL
 );
-
-CREATE INDEX idx_roadmaps_account_id ON roadmaps(account_id);
 
 CREATE INDEX idx_roadmaps_slug ON roadmaps(slug);
 
@@ -22,13 +20,10 @@ CREATE TABLE IF NOT EXISTS topics(
   "description" text NOT NULL,
   "order" integer NOT NULL,
   "finished" boolean NOT NULL DEFAULT FALSE,
-  "created_at" timestamp(0) without time zone DEFAULT now() NOT NULL,
-  "updated_at" timestamp(0) without time zone DEFAULT now() NOT NULL
+  "completed_at" timestamp without time zone,
+  "created_at" timestamp without time zone DEFAULT now() NOT NULL,
+  "updated_at" timestamp without time zone DEFAULT now() NOT NULL
 );
-
-CREATE INDEX idx_topics_roadmap_id ON topics(roadmap_id);
-
-CREATE INDEX idx_topics_parent_id ON topics(parent_id);
 
 CREATE INDEX idx_topics_slug ON topics(slug);
 

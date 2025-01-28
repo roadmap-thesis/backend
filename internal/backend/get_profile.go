@@ -16,8 +16,10 @@ func (b *backend) GetProfile(ctx context.Context) (io.GetProfileOutput, error) {
 	}
 
 	return io.GetProfileOutput{
-		ID:    account.ID,
-		Name:  account.Name,
-		Email: account.Email,
+		ID:       account.ID,
+		Email:    account.Email,
+		Name:     account.Profile.Name,
+		Avatar:   account.Profile.Avatar,
+		JoinedAt: account.CreatedAt,
 	}, nil
 }

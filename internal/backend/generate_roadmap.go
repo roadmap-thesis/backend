@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/roadmap-thesis/backend/internal/domain"
+	"github.com/roadmap-thesis/backend/internal/domain/object"
 	"github.com/roadmap-thesis/backend/internal/io"
 	"github.com/roadmap-thesis/backend/pkg/auth"
 	"github.com/roadmap-thesis/backend/pkg/llm"
@@ -38,6 +40,22 @@ func (b *backend) GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapI
 		}
 	}
 
+	personalizationOpt := domain.NewPersonalizationOptions(
+		auth.ID,
+		0,
+		object.NewInterval(
+			input.PersonalizationOptions.DailyTimeAvailability.Value,
+			input.PersonalizationOptions.DailyTimeAvailability.Unit,
+		).ToDuration(),
+		object.NewInterval(
+			input.PersonalizationOptions.TotalDuration.Value,
+			input.PersonalizationOptions.TotalDuration.Unit,
+		).ToDuration(),
+		input.PersonalizationOptions.SkillLevel,
+		input.PersonalizationOptions.AdditionalInfo,
+	)
+	roadmap.SetPersonalizationOptions(personalizationOpt)
+
 	createdRoadmap, err := b.repository.Roadmap.Save(ctx, roadmap)
 	if err != nil {
 		return io.GenerateRoadmapOutput{}, err
@@ -66,7 +84,7 @@ type chatGeneratePromptPromptResultSubtopic struct {
 }
 
 func (b *backend) chatGeneratePrompt(ctx context.Context, prompt llm.ChatPrompt) (chatGeneratePromptPromptResult, error) {
-	fmt.Println(prompt.User)
+	fmt.Println(prompt.System)
 	content, err := b.llm.Chat(ctx, prompt)
 	if err != nil {
 		return chatGeneratePromptPromptResult{}, err
@@ -74,7 +92,8 @@ func (b *backend) chatGeneratePrompt(ctx context.Context, prompt llm.ChatPrompt)
 
 	var result chatGeneratePromptPromptResult
 
-	log.Debug().Msg(content)
+	fmt.Println("result!")
+	fmt.Println(content)
 
 	if err := json.Unmarshal([]byte(content), &result); err != nil {
 		return chatGeneratePromptPromptResult{}, err
@@ -94,11 +113,15 @@ func (b *backend) makeGenerateRoadmapUserPrompt(input io.GenerateRoadmapInput) s
 	sb.WriteString("\nHere are my personalization options:\n")
 
 	sb.WriteString("- Daily Time Availability: ")
-	sb.WriteString(input.PersonalizationOptions.DailyTimeAvailability)
+	sb.WriteString(strconv.Itoa(input.PersonalizationOptions.DailyTimeAvailability.Value))
+	sb.WriteString(" ")
+	sb.WriteString(string(input.PersonalizationOptions.DailyTimeAvailability.Unit))
 	sb.WriteString("\n")
 
 	sb.WriteString("- Total Duration: ")
-	sb.WriteString(input.PersonalizationOptions.TotalDuration)
+	sb.WriteString(strconv.Itoa(input.PersonalizationOptions.TotalDuration.Value))
+	sb.WriteString(" ")
+	sb.WriteString(string(input.PersonalizationOptions.TotalDuration.Unit))
 	sb.WriteString("\n")
 
 	sb.WriteString("- Skill Level: ")

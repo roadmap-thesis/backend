@@ -3,7 +3,6 @@ package domain
 import (
 	"time"
 
-	"github.com/roadmap-thesis/backend/internal/domain/object"
 	"github.com/roadmap-thesis/backend/pkg/slug"
 	"github.com/roadmap-thesis/backend/pkg/str"
 )
@@ -21,7 +20,7 @@ type Roadmap struct {
 
 	Account                Account
 	Topics                 []*Topic
-	PersonalizationOptions object.PersonalizationOptions
+	PersonalizationOptions *PersonalizationOptions
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -74,7 +73,7 @@ func (e *Roadmap) IsZero() bool {
 		e.Description == "" &&
 		e.Account.IsZero() &&
 		e.Topics == nil &&
-		e.PersonalizationOptions == object.PersonalizationOptions{} &&
+		e.PersonalizationOptions.IsZero() &&
 		e.CreatedAt.IsZero() &&
 		e.UpdatedAt.IsZero()
 }
@@ -125,6 +124,10 @@ func (e *Roadmap) calculateCompletionPercentage(topics []*Topic, totalTopics int
 
 func (e *Roadmap) SetCreator(acc Account) {
 	e.Account = acc
+}
+
+func (e *Roadmap) SetPersonalizationOptions(opts *PersonalizationOptions) {
+	e.PersonalizationOptions = opts
 }
 
 func (e *Roadmap) UpdateChangelog() {

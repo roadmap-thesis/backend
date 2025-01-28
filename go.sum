@@ -12,6 +12,8 @@ github.com/aarondl/opt v0.0.0-20230114172057-b91f370c41f0 h1:vLrhbOWVPxtHao/QthU
 github.com/aarondl/opt v0.0.0-20230114172057-b91f370c41f0/go.mod h1:l4/5NZtYd/SIohsFhaJQQe+sPOTG22furpZ5FvcYOzk=
 github.com/cohesion-org/deepseek-go v0.0.0-20250124222348-4ca343ea1bd4 h1:yuKgK1XXU3deMYiVCimjtlxHIP3etuSxV/fIq7QNSTo=
 github.com/cohesion-org/deepseek-go v0.0.0-20250124222348-4ca343ea1bd4/go.mod h1:je2+GYTRsFGimyZNP4hpAcARQ7dcMaidT5YisexH0w0=
+github.com/cohesion-org/deepseek-go v1.0.1 h1:OxcCxjbFBwRj8/lQv78e82PT8EdHrl/+siHdH5DWZFM=
+github.com/cohesion-org/deepseek-go v1.0.1/go.mod h1:je2+GYTRsFGimyZNP4hpAcARQ7dcMaidT5YisexH0w0=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

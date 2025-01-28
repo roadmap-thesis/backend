@@ -157,7 +157,15 @@ func (r *RoadmapRepository) Save(ctx context.Context, input *domain.Roadmap) (do
 			return err
 		}
 
-		return r.saveTopicsAndSubtopics(ctx, tx, roadmap.ID, input.Topics)
+		if err := r.saveTopicsAndSubtopics(ctx, tx, roadmap.ID, input.Topics); err != nil {
+			return err
+		}
+
+		if err := r.savePersonalizationOptions(ctx, tx, roadmap.ID, input.PersonalizationOptions); err != nil {
+			return err
+		}
+
+		return nil
 	})
 	if err != nil {
 		return domain.Roadmap{}, err
@@ -217,6 +225,8 @@ func (r *RoadmapRepository) saveTopicsAndSubtopics(ctx context.Context, tx pgx.T
 	// Link the subtopics to their parent topic and set the roadmap ID
 	parentID := 0
 	for _, item := range mergedTopicAndSubtopic {
+		// check if the current item is a parent topic, since we've
+		// stored the parent topic first
 		if item.ID != 0 {
 			parentID = item.ID
 			continue
@@ -229,6 +239,7 @@ func (r *RoadmapRepository) saveTopicsAndSubtopics(ctx context.Context, tx pgx.T
 	}
 	log.Debug().Any("linkedSubtopics", linkedSubtopics).Send()
 
+	// Store the subtopics
 	_, err = tx.CopyFrom(ctx,
 		pgx.Identifier{domain.TopicTable},
 		[]string{"roadmap_id", "parent_id", "title", "slug", "description", "order", "finished", "created_at", "updated_at"},
@@ -236,6 +247,38 @@ func (r *RoadmapRepository) saveTopicsAndSubtopics(ctx context.Context, tx pgx.T
 	)
 
 	return err
+}
+
+func (r *RoadmapRepository) savePersonalizationOptions(ctx context.Context, tx pgx.Tx, roadmapID int, input *domain.PersonalizationOptions) error {
+	query, args := psql.Insert(
+		im.Into(domain.PersonalizationOptionsTable,
+			"account_id",
+			"roadmap_id",
+			"daily_time_availability",
+			"total_duration",
+			"skill_level",
+			"additional_info",
+			"created_at",
+			"updated_at",
+		),
+		im.Values(psql.Arg(
+			input.AccountID,
+			roadmapID,
+			input.DailyTimeAvailability,
+			input.TotalDuration,
+			input.SkillLevel,
+			input.AdditionalInfo,
+			input.CreatedAt,
+			input.UpdatedAt,
+		)),
+	).MustBuild(ctx)
+
+	_, err := tx.Exec(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *RoadmapRepository) Delete(ctx context.Context, id int) (domain.Roadmap, error) {

@@ -12,17 +12,17 @@ const (
 
 type Account struct {
 	ID       int
-	Name     string
 	Email    string
 	Password object.Password
 
+	Profile  *Profile
 	Roadmaps []*Roadmap
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewAccount(name, email, plainPassword string) (*Account, error) {
+func NewAccount(email, plainPassword string) (*Account, error) {
 	password := object.Password(plainPassword)
 
 	if err := password.Validate(plainPassword); err != nil {
@@ -35,7 +35,6 @@ func NewAccount(name, email, plainPassword string) (*Account, error) {
 	}
 
 	account := &Account{
-		Name:      name,
 		Email:     email,
 		Password:  hash,
 		CreatedAt: time.Now(),
@@ -47,7 +46,6 @@ func NewAccount(name, email, plainPassword string) (*Account, error) {
 
 func (e *Account) IsZero() bool {
 	return e.ID == 0 &&
-		e.Name == "" &&
 		e.Email == "" &&
 		e.Password == "" &&
 		e.CreatedAt.IsZero() &&
@@ -58,8 +56,11 @@ func (e *Account) CheckPassword(password string) bool {
 	return e.Password.Compare(password)
 }
 
+func (e *Account) SetProfile(profile *Profile) {
+	e.Profile = profile
+}
+
 func (e *Account) Update(name, email string) {
-	e.Name = name
 	e.Email = email
 	e.UpdateChangelog()
 }

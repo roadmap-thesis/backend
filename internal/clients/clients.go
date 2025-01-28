@@ -18,8 +18,8 @@ type Clients struct {
 
 func New(ctx context.Context) (*Clients, error) {
 	c := &Clients{
-		// LLM: llm.NewOpenAiClient(),
-		LLM: llm.NewDeepSeekClient(),
+		LLM: llm.NewOpenAiClient(),
+		// LLM: llm.NewDeepSeekClient(),
 	}
 
 	var group errgroup.Group
