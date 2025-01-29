@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -57,7 +56,7 @@ type validationErrMsg struct {
 
 func getValidationErrMsg(err validator.FieldError) validationErrMsg {
 	errMsg := validationErrMsg{
-		Field: strings.ToLower(err.Field()),
+		Field: err.Field(),
 	}
 
 	errMsg.Message = map[string]string{
@@ -65,6 +64,8 @@ func getValidationErrMsg(err validator.FieldError) validationErrMsg {
 		"email":    "Must be a valid email address.",
 		"min":      err.Field() + " must be at least " + err.Param() + " characters long.",
 		"max":      err.Field() + " must not exceed " + err.Param() + " characters.",
+		"url":      "Must be a valid URL.",
+		"oneof":    err.Field() + " must be one of the following: " + err.Param() + ".",
 	}[err.Tag()]
 
 	return errMsg
