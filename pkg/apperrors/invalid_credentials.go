@@ -7,6 +7,6 @@ import (
 func InvalidCredentials() error {
 	return &AppError{
 		code:    http.StatusUnauthorized,
-		message: "Invalid Credentials.",
+		message: "Invalid Credentials",
 	}
 }

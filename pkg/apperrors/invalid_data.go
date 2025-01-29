@@ -5,6 +5,6 @@ import "net/http"
 func InvalidData() error {
 	return &AppError{
 		code:    http.StatusBadRequest,
-		message: "Invalid Data.",
+		message: "Invalid Data",
 	}
 }
