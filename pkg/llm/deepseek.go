@@ -8,22 +8,24 @@ import (
 	"github.com/cohesion-org/deepseek-go/constants"
 	"github.com/roadmap-thesis/backend/pkg/config"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 )
 
-type DeepSeekClient struct {
+type deepSeekClient struct {
 	client *deepseek.Client
 }
 
 func NewDeepSeekClient() Client {
 	client := deepseek.NewClient(config.DeepSeekAPIKey())
 
-	return &DeepSeekClient{
+	return &deepSeekClient{
 		client: client,
 	}
 }
 
-func (d *DeepSeekClient) Chat(ctx context.Context, prompt ChatPrompt) (string, error) {
-	ctx, span := tracer.Start(ctx, "(*openAiClient.Chat)")
+func (d *deepSeekClient) Chat(ctx context.Context, prompt ChatPrompt) (string, error) {
+	ctx, span := tracer.Start(ctx, "(*deepSeekClient.Chat)")
 	defer span.End()
 
 	response, err := d.client.CreateChatCompletion(ctx, &deepseek.ChatCompletionRequest{
@@ -40,7 +42,8 @@ func (d *DeepSeekClient) Chat(ctx context.Context, prompt ChatPrompt) (string, e
 		},
 	})
 	if err != nil {
-		span.RecordError(err)
+		span.RecordError(err, trace.WithStackTrace(true))
+		span.SetStatus(codes.Error, err.Error())
 		return "", err
 	}
 

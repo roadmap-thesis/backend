@@ -7,6 +7,8 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/sashabaranov/go-openai"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type openAiClient struct {
@@ -39,7 +41,8 @@ func (o *openAiClient) Chat(ctx context.Context, prompt ChatPrompt) (string, err
 		},
 	})
 	if err != nil {
-		span.RecordError(err)
+		span.RecordError(err, trace.WithStackTrace(true))
+		span.SetStatus(codes.Error, err.Error())
 		return "", err
 	}
 
