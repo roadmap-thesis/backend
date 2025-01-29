@@ -23,6 +23,8 @@ type Config struct {
 	JWTSecretKey       string
 	JWTSecretExpiresIn time.Duration
 
+	LLMProvider string
+
 	OpenAiAPIKey string
 	OpenAiModel  string
 
@@ -49,6 +51,8 @@ func Init() {
 
 		JWTSecretKey:       LookupEnv("JWT_SECRET_KEY", "secret"),
 		JWTSecretExpiresIn: LookupEnv("JWT_SECRET_EXPIRES_IN", time.Hour*24),
+
+		LLMProvider: LookupEnv("LLM_PROVIDER", "deepseek"),
 
 		OpenAiAPIKey: LookupEnv("OPENAI_API_KEY", ""),
 		OpenAiModel:  LookupEnv("OPENAI_MODEL", "gpt-4o-mini"),
@@ -78,6 +82,8 @@ func JWTSecretExpiresIn() time.Duration { return config.JWTSecretExpiresIn }
 
 func SetJWTSecretKey(key string)                   { config.JWTSecretKey = key }
 func SetJWTSecretExpiresIn(duration time.Duration) { config.JWTSecretExpiresIn = duration }
+
+func LLMProvider() string { return config.LLMProvider }
 
 func OpenAiAPIKey() string { return config.OpenAiAPIKey }
 func OpenAiModel() string  { return config.OpenAiModel }

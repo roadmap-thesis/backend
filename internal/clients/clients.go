@@ -17,9 +17,17 @@ type Clients struct {
 }
 
 func New(ctx context.Context) (*Clients, error) {
-	c := &Clients{
-		LLM: llm.NewOpenAiClient(),
-		// LLM: llm.NewDeepSeekClient(),
+	c := &Clients{}
+
+	switch llm.Provider(config.LLMProvider()) {
+	case llm.OpenAI:
+		log.Info().Msg("using OpenAI LLM provider")
+		c.LLM = llm.NewOpenAiClient()
+	case llm.DeepSeek:
+		log.Info().Msg("using DeepSeek LLM provider")
+		c.LLM = llm.NewDeepSeekClient()
+	default:
+		return nil, errors.New("invalid LLM provider")
 	}
 
 	var group errgroup.Group

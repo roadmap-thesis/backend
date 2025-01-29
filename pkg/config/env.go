@@ -9,7 +9,7 @@ import (
 
 // EnvTypes is a generic type for environment variables
 type EnvTypes interface {
-	string | []string | int | int32 | int64 | time.Duration
+	~string | ~[]string | ~int | int32 | int64 | time.Duration
 }
 
 // LookupEnv is a generic type implementation to search env keys
