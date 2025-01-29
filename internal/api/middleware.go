@@ -10,6 +10,7 @@ import (
 
 func (s *Server) setupMiddlewares() {
 	s.instance.Use(middleware.CORS())
+	s.instance.Use(middleware.Recover())
 	s.instance.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:      true,
 		LogStatus:   true,

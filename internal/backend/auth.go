@@ -33,10 +33,10 @@ type registerEmailOutput struct {
 	created bool
 }
 
-func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (*registerEmailOutput, error) {
+func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (registerEmailOutput, error) {
 	existingAccount, err := b.repository.Account.GetByEmail(ctx, input.Email)
 	if err != nil && err != domain.ErrAccountNotFound {
-		return nil, err
+		return registerEmailOutput{}, err
 	}
 
 	// sign in if account already exists
@@ -44,15 +44,15 @@ func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (*regis
 		matched := existingAccount.CheckPassword(input.Password)
 
 		if !matched {
-			return nil, apperrors.InvalidCredentials()
+			return registerEmailOutput{}, apperrors.InvalidCredentials()
 		}
 
-		return &registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}, nil
+		return registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}, nil
 	}
 
 	account, err := domain.NewAccount(input.Email, input.Password)
 	if err != nil {
-		return nil, err
+		return registerEmailOutput{}, err
 	}
 
 	avatar := input.Avatar
@@ -64,8 +64,8 @@ func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (*regis
 
 	createdAccount, err := b.repository.Account.Save(ctx, account)
 	if err != nil {
-		return nil, err
+		return registerEmailOutput{}, err
 	}
 
-	return &registerEmailOutput{id: createdAccount.ID, email: createdAccount.Email, created: true}, err
+	return registerEmailOutput{id: createdAccount.ID, email: createdAccount.Email, created: true}, err
 }
