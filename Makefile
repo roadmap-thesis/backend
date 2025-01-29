@@ -8,10 +8,13 @@ run: ## Runs the application
 	@go run cmd/app/main.go
 .PHONY: run
 
-docker-compose-up: ## Starts the docker-compose services
+docker-compose: ## Starts the docker-compose services
 	@docker-compose up -d
 
-docker-compose-down: ## Stops the docker-compose services
+docker-compose-stop: ## Stops the docker-compose services
+	@docker-compose stop
+
+docker-compose-down: ## Stops and removes the docker-compose services
 	@docker-compose down
 
 migrate: ## Migrates the database to the most recent version

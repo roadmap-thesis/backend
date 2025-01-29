@@ -1,5 +1,18 @@
 version: '3'
+
 services:
+  postgres:
+    image: postgres:17
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=roadmap
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
@@ -13,3 +26,6 @@ services:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
       - "4317:4317" # OpenTelemetry gRPC (for Go app)
+
+volumes:
+  postgres_data:

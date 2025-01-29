@@ -2,9 +2,6 @@ package main
 
 import (
 	"context"
-	"os"
-	"os/signal"
-	"syscall"
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/roadmap-thesis/backend/internal/api"
@@ -18,7 +15,7 @@ import (
 )
 
 func main() {
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	config.Init()
