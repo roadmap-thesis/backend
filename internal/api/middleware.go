@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"golang.org/x/time/rate"
 )
 
@@ -35,4 +36,6 @@ func (s *Server) setupMiddlewares() {
 		},
 	}))
 	s.instance.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(20))))
+	s.instance.Use(otelecho.Middleware("api-layer"))
+
 }

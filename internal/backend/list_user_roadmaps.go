@@ -6,10 +6,15 @@ import (
 	"github.com/roadmap-thesis/backend/internal/domain/object"
 	"github.com/roadmap-thesis/backend/internal/io"
 	"github.com/roadmap-thesis/backend/pkg/auth"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 func (b *backend) ListUserRoadmaps(ctx context.Context) (io.ListUserRoadmapsOutput, error) {
+	ctx, span := tracer.Start(ctx, "(*backend.ListUserRoadmaps)")
+	defer span.End()
+
 	auth := auth.FromContext(ctx)
+	span.SetAttributes(attribute.Int("account_id", auth.ID))
 
 	roadmaps, err := b.repository.Roadmap.ListByAccountID(ctx, auth.ID)
 	if err != nil {

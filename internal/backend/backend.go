@@ -6,6 +6,11 @@ import (
 	"github.com/roadmap-thesis/backend/internal/io"
 	"github.com/roadmap-thesis/backend/internal/repository"
 	"github.com/roadmap-thesis/backend/pkg/llm"
+	"go.opentelemetry.io/otel"
+)
+
+var (
+	tracer = otel.Tracer("backend-layer")
 )
 
 type Backend interface {
