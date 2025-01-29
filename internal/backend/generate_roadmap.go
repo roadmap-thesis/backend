@@ -3,7 +3,6 @@ package backend
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -84,16 +83,12 @@ type chatGeneratePromptPromptResultSubtopic struct {
 }
 
 func (b *backend) chatGeneratePrompt(ctx context.Context, prompt llm.ChatPrompt) (chatGeneratePromptPromptResult, error) {
-	fmt.Println(prompt.System)
 	content, err := b.llm.Chat(ctx, prompt)
 	if err != nil {
 		return chatGeneratePromptPromptResult{}, err
 	}
 
 	var result chatGeneratePromptPromptResult
-
-	fmt.Println("result!")
-	fmt.Println(content)
 
 	if err := json.Unmarshal([]byte(content), &result); err != nil {
 		return chatGeneratePromptPromptResult{}, err
