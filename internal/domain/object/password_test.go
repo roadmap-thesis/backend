@@ -71,7 +71,7 @@ func TestPassword_Compare(t *testing.T) {
 	})
 }
 
-func TestPassowrd_String(t *testing.T) {
+func TestPassword_String(t *testing.T) {
 	t.Parallel()
 
 	t.Run("String", func(t *testing.T) {
