@@ -7,3 +7,7 @@ const (
 	SkillLevelIntermediate SkillLevel = "intermediate"
 	SkillLevelAdvanced     SkillLevel = "advanced"
 )
+
+func (s SkillLevel) String() string {
+	return string(s)
+}

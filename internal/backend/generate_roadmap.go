@@ -110,17 +110,17 @@ func (b *backend) makeGenerateRoadmapUserPrompt(input io.GenerateRoadmapInput) s
 	sb.WriteString("- Daily Time Availability: ")
 	sb.WriteString(strconv.Itoa(input.PersonalizationOptions.DailyTimeAvailability.Value))
 	sb.WriteString(" ")
-	sb.WriteString(string(input.PersonalizationOptions.DailyTimeAvailability.Unit))
+	sb.WriteString(input.PersonalizationOptions.DailyTimeAvailability.Unit.String())
 	sb.WriteString("\n")
 
 	sb.WriteString("- Total Duration: ")
 	sb.WriteString(strconv.Itoa(input.PersonalizationOptions.TotalDuration.Value))
 	sb.WriteString(" ")
-	sb.WriteString(string(input.PersonalizationOptions.TotalDuration.Unit))
+	sb.WriteString(input.PersonalizationOptions.TotalDuration.Unit.String())
 	sb.WriteString("\n")
 
 	sb.WriteString("- Skill Level: ")
-	sb.WriteString(string(input.PersonalizationOptions.SkillLevel))
+	sb.WriteString(input.PersonalizationOptions.SkillLevel.String())
 	sb.WriteString("\n")
 
 	if input.PersonalizationOptions.AdditionalInfo != "" {

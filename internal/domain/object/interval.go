@@ -17,6 +17,10 @@ const (
 	IntervalUnitMonths  IntervalUnit = "months"
 )
 
+func (u IntervalUnit) String() string {
+	return string(u)
+}
+
 func NewInterval(value int, unit IntervalUnit) Interval {
 	return Interval{
 		Value: value,

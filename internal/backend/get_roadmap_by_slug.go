@@ -37,7 +37,7 @@ func (b *backend) GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoad
 		PersonalizationOpts: io.GetRoadmapOutputPersonalizationOptions{
 			DailyTimeAvailability: object.NewIntervalFromDuration(personalizationOptions.DailyTimeAvailability),
 			TotalDuration:         object.NewIntervalFromDuration(personalizationOptions.TotalDuration),
-			SkillLevel:            string(personalizationOptions.SkillLevel),
+			SkillLevel:            personalizationOptions.SkillLevel.String(),
 			AdditionalInfo:        personalizationOptions.AdditionalInfo,
 		},
 		TotalTopics:          roadmap.TotalTopics(),
