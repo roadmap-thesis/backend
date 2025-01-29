@@ -30,6 +30,8 @@ type Config struct {
 
 	DeepSeekAPIKey string
 	DeepSeekModel  string
+
+	OTLPExporterEndpoint string
 }
 
 var config *Config
@@ -37,7 +39,7 @@ var config *Config
 // Init initializes the config package
 func Init() {
 	config = &Config{
-		AppName: LookupEnv("APP_NAME", "roadmap_gen_api"),
+		AppName: LookupEnv("APP_NAME", "roadmap_backend"),
 		AppEnv:  LookupEnv("APP_ENV", "local"),
 		Port:    LookupEnv("PORT", "5000"),
 
@@ -59,6 +61,8 @@ func Init() {
 
 		DeepSeekAPIKey: LookupEnv("DEEPSEEK_API_KEY", ""),
 		DeepSeekModel:  LookupEnv("DEEPSEEK_MODEL", deepseek.DeepSeekChat),
+
+		OTLPExporterEndpoint: LookupEnv("OTLP_EXPORTER_ENDPOINT", "localhost:4317"),
 	}
 }
 
@@ -96,3 +100,5 @@ func DeepSeekModel() string  { return config.DeepSeekModel }
 
 func SetDeepSeekAPIKey(key string)  { config.DeepSeekAPIKey = key }
 func SetDeepSeekModel(model string) { config.DeepSeekModel = model }
+
+func OTLPExporterEndpoint() string { return config.OTLPExporterEndpoint }

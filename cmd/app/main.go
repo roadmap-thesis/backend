@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"os"
+	"os/signal"
+	"syscall"
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/roadmap-thesis/backend/internal/api"
@@ -10,11 +13,12 @@ import (
 	"github.com/roadmap-thesis/backend/internal/repository"
 	"github.com/roadmap-thesis/backend/pkg/config"
 	"github.com/roadmap-thesis/backend/pkg/logger"
+	"github.com/roadmap-thesis/backend/pkg/tracing"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	defer cancel()
 
 	config.Init()
@@ -25,6 +29,16 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to initialize clients")
 	}
 	defer clients.Close()
+
+	trace, err := tracing.NewProvider(ctx)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize tracer provider")
+	}
+	defer func() {
+		if err := trace.Shutdown(ctx); err != nil {
+			log.Fatal().Err(err).Msg("Failed shutting down tracer provider")
+		}
+	}()
 
 	log.Info().Msg("Bootstrapping application...")
 	repository := repository.New(clients.DB)

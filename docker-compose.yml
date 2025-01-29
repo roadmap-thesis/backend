@@ -1,0 +1,29 @@
+version: '3'
+
+volumes:
+  grafana-storage: {}
+
+services:
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana-storage:/var/lib/grafana
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp" # UDP port for Jaeger agent
+      - "16686:16686" # Web UI
+      - "14268:14268" # HTTP port for spans
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317" # OpenTelemetry gRPC (for Go app)

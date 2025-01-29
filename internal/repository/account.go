@@ -9,6 +9,8 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/im"
 	"github.com/stephenafamo/bob/dialect/psql/sm"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type AccountRepository struct {
@@ -22,6 +24,9 @@ func NewAccountRepository(db database.Connection) *AccountRepository {
 }
 
 func (r *AccountRepository) GetByID(ctx context.Context, filter int) (domain.Account, error) {
+	ctx, span := tracer.Start(ctx, "(*AccountRepository.GetByID)", trace.WithAttributes(attribute.Int("id", filter)))
+	defer span.End()
+
 	accounts, err := r.fetch(ctx, "id", filter)
 	if err != nil {
 		return domain.Account{}, err
@@ -35,6 +40,9 @@ func (r *AccountRepository) GetByID(ctx context.Context, filter int) (domain.Acc
 }
 
 func (r *AccountRepository) GetByEmail(ctx context.Context, filter string) (domain.Account, error) {
+	ctx, span := tracer.Start(ctx, "(*AccountRepository.GetByEmail)", trace.WithAttributes(attribute.String("email", filter)))
+	defer span.End()
+
 	accounts, err := r.fetch(ctx, "email", filter)
 	if err != nil {
 		return domain.Account{}, err
@@ -48,6 +56,9 @@ func (r *AccountRepository) GetByEmail(ctx context.Context, filter string) (doma
 }
 
 func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) ([]domain.Account, error) {
+	ctx, span := tracer.Start(ctx, "(*AccountRepository.fetch)", trace.WithAttributes(attribute.String("col", col)))
+	defer span.End()
+
 	query, args := psql.Select(
 		sm.Columns(
 			psql.Quote(domain.AccountTable, "id"),
@@ -68,6 +79,7 @@ func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) 
 
 	rows, err := r.db.Query(ctx, query, args...)
 	if err != nil {
+		span.RecordError(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -89,6 +101,7 @@ func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) 
 			&profile.UpdatedAt,
 		)
 		if err != nil {
+			span.RecordError(err)
 			return nil, err
 		}
 
@@ -97,6 +110,7 @@ func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) 
 	}
 
 	if err := rows.Err(); err != nil {
+		span.RecordError(err)
 		return nil, err
 	}
 
@@ -104,6 +118,9 @@ func (r *AccountRepository) fetch(ctx context.Context, col string, args ...any) 
 }
 
 func (r *AccountRepository) Save(ctx context.Context, input *domain.Account) (domain.Account, error) {
+	ctx, span := tracer.Start(ctx, "(*AccountRepository.Save)")
+	defer span.End()
+
 	var account domain.Account
 	err := r.db.InTx(ctx, func(tx pgx.Tx) error {
 		saveAccountQuery, saveAccountArgs := psql.Insert(
@@ -119,6 +136,7 @@ func (r *AccountRepository) Save(ctx context.Context, input *domain.Account) (do
 			&account.UpdatedAt,
 		)
 		if err != nil {
+			span.RecordError(err)
 			return err
 		}
 
@@ -129,12 +147,14 @@ func (r *AccountRepository) Save(ctx context.Context, input *domain.Account) (do
 
 		_, err = tx.Exec(ctx, saveProfileQuery, saveProfileArgs...)
 		if err != nil {
+			span.RecordError(err)
 			return err
 		}
 
 		return nil
 	})
 	if err != nil {
+		span.RecordError(err)
 		return domain.Account{}, err
 	}
 

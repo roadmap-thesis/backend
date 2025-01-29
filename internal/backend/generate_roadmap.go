@@ -12,12 +12,25 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/auth"
 	"github.com/roadmap-thesis/backend/pkg/llm"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func (b *backend) GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapInput) (io.GenerateRoadmapOutput, error) {
+	traceCtx, span := tracer.Start(ctx, "(*backend.GenerateRoadmap)", trace.WithAttributes(
+		attribute.String("topic", input.Topic),
+		attribute.Int("personalization_options.daily_time_availability.value", input.PersonalizationOptions.DailyTimeAvailability.Value),
+		attribute.String("personalization_options.daily_time_availability.unit", input.PersonalizationOptions.DailyTimeAvailability.Unit.String()),
+		attribute.Int("personalization_options.total_duration.value", input.PersonalizationOptions.TotalDuration.Value),
+		attribute.String("personalization_options.total_duration.unit", input.PersonalizationOptions.TotalDuration.Unit.String()),
+		attribute.String("skill_level", input.PersonalizationOptions.SkillLevel.String()),
+		attribute.String("additional_info", input.PersonalizationOptions.AdditionalInfo),
+	))
+	defer span.End()
+
 	var output io.GenerateRoadmapOutput
 
-	generated, err := b.chatGeneratePrompt(ctx, llm.ChatPrompt{
+	generated, err := b.chatGeneratePrompt(traceCtx, llm.ChatPrompt{
 		System: b.makeGenerateRoadmapSystemPrompt(),
 		User:   b.makeGenerateRoadmapUserPrompt(input),
 	})
@@ -55,7 +68,7 @@ func (b *backend) GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapI
 	)
 	roadmap.SetPersonalizationOptions(personalizationOpt)
 
-	createdRoadmap, err := b.repository.Roadmap.Save(ctx, roadmap)
+	createdRoadmap, err := b.repository.Roadmap.Save(traceCtx, roadmap)
 	if err != nil {
 		return io.GenerateRoadmapOutput{}, err
 	}
@@ -83,14 +96,19 @@ type chatGeneratePromptPromptResultSubtopic struct {
 }
 
 func (b *backend) chatGeneratePrompt(ctx context.Context, prompt llm.ChatPrompt) (chatGeneratePromptPromptResult, error) {
+	ctx, span := tracer.Start(ctx, "(*backend.chatGeneratePrompt)")
+	defer span.End()
+
 	content, err := b.llm.Chat(ctx, prompt)
 	if err != nil {
+		span.RecordError(err)
 		return chatGeneratePromptPromptResult{}, err
 	}
 
 	var result chatGeneratePromptPromptResult
 
 	if err := json.Unmarshal([]byte(content), &result); err != nil {
+		span.RecordError(err)
 		return chatGeneratePromptPromptResult{}, err
 	}
 

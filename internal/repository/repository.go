@@ -2,6 +2,11 @@ package repository
 
 import (
 	"github.com/roadmap-thesis/backend/pkg/database"
+	"go.opentelemetry.io/otel"
+)
+
+var (
+	tracer = otel.Tracer("repository-layer")
 )
 
 type Repository struct {

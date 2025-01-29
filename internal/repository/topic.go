@@ -7,6 +7,8 @@ import (
 	"github.com/roadmap-thesis/backend/pkg/database"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/sm"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type TopicRepository struct {
@@ -20,6 +22,9 @@ func NewTopicRepository(db database.Connection) *TopicRepository {
 }
 
 func (r *TopicRepository) GetBySlug(ctx context.Context, slug string) (domain.Topic, error) {
+	ctx, span := tracer.Start(ctx, "(*TopicRepository.GetBySlug)", trace.WithAttributes(attribute.String("slug", slug)))
+	defer span.End()
+
 	topics, err := r.fetch(ctx, "slug", slug)
 	if err != nil {
 		return domain.Topic{}, err
@@ -33,6 +38,9 @@ func (r *TopicRepository) GetBySlug(ctx context.Context, slug string) (domain.To
 }
 
 func (r *TopicRepository) fetch(ctx context.Context, col string, args ...any) ([]domain.Topic, error) {
+	ctx, span := tracer.Start(ctx, "(*TopicRepository.fetch)", trace.WithAttributes(attribute.String("col", col)))
+	defer span.End()
+
 	query, args := psql.Select(
 		sm.Columns(
 			psql.Quote(domain.TopicTable, "id"),

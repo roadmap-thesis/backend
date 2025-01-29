@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/roadmap-thesis/backend/pkg/config"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/sashabaranov/go-openai"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type openAiClient struct {
@@ -23,6 +22,9 @@ func NewOpenAiClient() Client {
 }
 
 func (o *openAiClient) Chat(ctx context.Context, prompt ChatPrompt) (string, error) {
+	ctx, span := tracer.Start(ctx, "(*openAiClient.Chat)")
+	defer span.End()
+
 	response, err := o.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: config.OpenAiModel(),
 		Messages: []openai.ChatCompletionMessage{
@@ -37,20 +39,19 @@ func (o *openAiClient) Chat(ctx context.Context, prompt ChatPrompt) (string, err
 		},
 	})
 	if err != nil {
+		span.RecordError(err)
 		return "", err
 	}
 
-	log.Info().Dict("openai_request", zerolog.Dict().
-		Str("id", response.ID).
-		Str("model", response.Model).
-		Str("object", response.Object).
-		Int64("created", response.Created).
-		Dict("usage", zerolog.Dict().
-			Int("completion_tokens", response.Usage.CompletionTokens).
-			Int("prompt_tokens", response.Usage.PromptTokens).
-			Int("total_tokens", response.Usage.TotalTokens),
-		),
-	).Msg("OpenAI chat request")
+	span.SetAttributes(
+		attribute.String("id", response.ID),
+		attribute.String("model", response.Model),
+		attribute.String("object", response.Object),
+		attribute.Int64("created", response.Created),
+		attribute.Int("completion_tokens", response.Usage.CompletionTokens),
+		attribute.Int("prompt_tokens", response.Usage.PromptTokens),
+		attribute.Int("total_tokens", response.Usage.TotalTokens),
+	)
 
 	if len(response.Choices) == 0 {
 		return "", fmt.Errorf("openai: no choices in response")
