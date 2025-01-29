@@ -50,17 +50,11 @@ func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (regist
 		return registerEmailOutput{id: existingAccount.ID, email: existingAccount.Email}, nil
 	}
 
-	account, err := domain.NewAccount(input.Email, input.Password)
+	profile := domain.NewProfile(input.Name, input.Avatar)
+	account, err := domain.NewAccount(input.Email, input.Password, profile)
 	if err != nil {
 		return registerEmailOutput{}, err
 	}
-
-	avatar := input.Avatar
-	if avatar == "" {
-		avatar = domain.GetDefaultAvatar(input.Name)
-	}
-	profile := domain.NewProfile(input.Name, avatar)
-	account.SetProfile(profile)
 
 	createdAccount, err := b.repository.Account.Save(ctx, account)
 	if err != nil {

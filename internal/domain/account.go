@@ -27,7 +27,7 @@ type Account struct {
 	UpdatedAt time.Time
 }
 
-func NewAccount(email, plainPassword string) (*Account, error) {
+func NewAccount(email, plainPassword string, profile *Profile) (*Account, error) {
 	password := object.Password(plainPassword)
 
 	if err := password.Validate(plainPassword); err != nil {
@@ -42,6 +42,7 @@ func NewAccount(email, plainPassword string) (*Account, error) {
 	account := &Account{
 		Email:     email,
 		Password:  hash,
+		Profile:   profile,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

@@ -19,6 +19,10 @@ type Profile struct {
 }
 
 func NewProfile(name, avatar string) *Profile {
+	if avatar == "" {
+		avatar = getDefaultAvatar(name)
+	}
+
 	return &Profile{
 		Name:      name,
 		Avatar:    avatar,
@@ -27,7 +31,7 @@ func NewProfile(name, avatar string) *Profile {
 	}
 }
 
-func GetDefaultAvatar(name string) string {
+func getDefaultAvatar(name string) string {
 	return "https://hostedboringavatars.vercel.app/api/beam?colors=1DA1F2,14171A,657786,F5F8FA&name=" + html.EscapeString(name)
 }
 
