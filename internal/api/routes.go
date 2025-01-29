@@ -8,6 +8,7 @@ func (s *Server) setupRoutes() {
 	s.instance.POST("/auth", s.handler.Auth)
 	s.instance.GET("/profile", s.handler.GetProfile, middleware.Auth)
 
-	s.instance.GET("/roadmap/:slug", s.handler.GetRoadmapBySlug, middleware.Auth)
-	s.instance.POST("/roadmap", s.handler.GenerateRoadmap, middleware.Auth)
+	s.instance.GET("/roadmaps", s.handler.ListUserRoadmaps, middleware.Auth)
+	s.instance.GET("/roadmaps/:slug", s.handler.GetRoadmapBySlug, middleware.Auth)
+	s.instance.POST("/roadmaps", s.handler.GenerateRoadmap, middleware.Auth)
 }

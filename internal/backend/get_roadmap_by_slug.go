@@ -19,11 +19,6 @@ func (b *backend) GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoad
 		return io.GetRoadmapOutput{}, err
 	}
 
-	personalizationOptions, err := b.repository.PersonalizationOptions.GetByRoadmapID(ctx, roadmap.ID)
-	if err != nil {
-		return io.GetRoadmapOutput{}, err
-	}
-
 	account, err := b.repository.Account.GetByID(ctx, roadmap.AccountID)
 	if err != nil {
 		return io.GetRoadmapOutput{}, err
@@ -41,10 +36,10 @@ func (b *backend) GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoad
 			Avatar: roadmap.Account.Profile.Avatar,
 		},
 		PersonalizationOpts: io.GetRoadmapOutputPersonalizationOptions{
-			DailyTimeAvailability: object.NewIntervalFromDuration(personalizationOptions.DailyTimeAvailability),
-			TotalDuration:         object.NewIntervalFromDuration(personalizationOptions.TotalDuration),
-			SkillLevel:            personalizationOptions.SkillLevel.String(),
-			AdditionalInfo:        personalizationOptions.AdditionalInfo,
+			DailyTimeAvailability: object.NewIntervalFromDuration(roadmap.PersonalizationOptions.DailyTimeAvailability),
+			TotalDuration:         object.NewIntervalFromDuration(roadmap.PersonalizationOptions.TotalDuration),
+			SkillLevel:            roadmap.PersonalizationOptions.SkillLevel.String(),
+			AdditionalInfo:        roadmap.PersonalizationOptions.AdditionalInfo,
 		},
 		TotalTopics:          roadmap.TotalTopics(),
 		CompletionPercentage: roadmap.CompletionPercentage(),
