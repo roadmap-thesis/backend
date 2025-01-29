@@ -11,4 +11,5 @@ func (s *Server) setupRoutes() {
 	s.instance.GET("/roadmaps", s.handler.ListUserRoadmaps, middleware.Auth)
 	s.instance.GET("/roadmaps/:slug", s.handler.GetRoadmapBySlug, middleware.Auth)
 	s.instance.POST("/roadmaps", s.handler.GenerateRoadmap, middleware.Auth)
+	s.instance.GET("/roadmaps/topic/:slug", s.handler.GetTopicBySlug, middleware.Auth)
 }

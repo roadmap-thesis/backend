@@ -16,9 +16,9 @@ type Backend interface {
 	GenerateRoadmap(ctx context.Context, input io.GenerateRoadmapInput) (io.GenerateRoadmapOutput, error)
 	ListUserRoadmaps(ctx context.Context) (io.ListUserRoadmapsOutput, error)
 
+	GetTopicBySlug(ctx context.Context, slug string) (io.GetTopicOutput, error)
 	// DeleteUserRoadmap(ctx context.Context, input io.DeleteUserRoadmapInput) (io.DeleteUserRoadmapOutput, error)
 	// RegenerateRoadmap(ctx context.Context, input io.RegenerateRoadmapInput) (io.RegenerateRoadmapOutput, error)
-	// GetTopic(ctx context.Context, input io.GetTopicInput) (io.GetTopicOutput, error)
 	// GetTopicResources(ctx context.Context, input io.GetTopicResourcesInput) (io.GetTopicResourcesOutput, error)
 	// MarkTopicAsFinish(ctx context.Context, input io.MarkTopicAsFinishInput) (io.TopicFinishOutput, error)
 	// MarkTopicAsIncomplete(ctx context.Context, input io.MarkTopicAsIncompleteInput) (io.TopicFinishOutput, error)

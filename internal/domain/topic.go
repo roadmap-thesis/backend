@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"time"
 
 	"github.com/roadmap-thesis/backend/pkg/slug"
@@ -9,6 +10,10 @@ import (
 
 const (
 	TopicTable = "topics"
+)
+
+var (
+	ErrTopicNotFound = errors.New("topic not found")
 )
 
 type Topic struct {
