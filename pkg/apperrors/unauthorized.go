@@ -2,7 +2,7 @@ package apperrors
 
 import "net/http"
 
-func Unauthorized() *AppError {
+func Unauthorized() error {
 	return &AppError{
 		code:    http.StatusUnauthorized,
 		message: "Unauthorized.",

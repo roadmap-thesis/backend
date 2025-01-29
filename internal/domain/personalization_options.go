@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"time"
 
 	"github.com/roadmap-thesis/backend/internal/domain/object"
@@ -8,6 +9,10 @@ import (
 
 const (
 	PersonalizationOptionsTable = "personalization_options"
+)
+
+var (
+	ErrPersonalizationOptionsNotFound = errors.New("personalization options not found")
 )
 
 type PersonalizationOptions struct {

@@ -28,7 +28,7 @@ func (r *AccountRepository) GetByID(ctx context.Context, filter int) (domain.Acc
 	}
 
 	if len(accounts) == 0 {
-		return domain.Account{}, domain.ErrNotFound
+		return domain.Account{}, domain.ErrAccountNotFound
 	}
 
 	return accounts[0], nil
@@ -41,7 +41,7 @@ func (r *AccountRepository) GetByEmail(ctx context.Context, filter string) (doma
 	}
 
 	if len(accounts) == 0 {
-		return domain.Account{}, domain.ErrNotFound
+		return domain.Account{}, domain.ErrAccountNotFound
 	}
 
 	return accounts[0], nil

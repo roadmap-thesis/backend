@@ -28,7 +28,7 @@ func (r *PersonalizationOptionsRepository) GetByRoadmapID(ctx context.Context, f
 	}
 
 	if len(personalizationOpts) == 0 {
-		return domain.PersonalizationOptions{}, domain.ErrNotFound
+		return domain.PersonalizationOptions{}, domain.ErrPersonalizationOptionsNotFound
 	}
 
 	return personalizationOpts[0], nil

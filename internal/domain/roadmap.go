@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"time"
 
 	"github.com/roadmap-thesis/backend/pkg/slug"
@@ -9,6 +10,10 @@ import (
 
 const (
 	RoadmapTable = "roadmaps"
+)
+
+var (
+	ErrRoadmapNotFound = errors.New("roadmap not found")
 )
 
 type Roadmap struct {

@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"time"
 
 	"github.com/roadmap-thesis/backend/internal/domain/object"
@@ -8,6 +9,10 @@ import (
 
 const (
 	AccountTable = "accounts"
+)
+
+var (
+	ErrAccountNotFound = errors.New("account not found")
 )
 
 type Account struct {

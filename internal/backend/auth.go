@@ -35,7 +35,7 @@ type registerEmailOutput struct {
 
 func (b *backend) registerEmail(ctx context.Context, input io.AuthInput) (*registerEmailOutput, error) {
 	existingAccount, err := b.repository.Account.GetByEmail(ctx, input.Email)
-	if err != nil && err != domain.ErrNotFound {
+	if err != nil && err != domain.ErrAccountNotFound {
 		return nil, err
 	}
 

@@ -2,14 +2,20 @@ package backend
 
 import (
 	"context"
+	"errors"
 
+	"github.com/roadmap-thesis/backend/internal/domain"
 	"github.com/roadmap-thesis/backend/internal/domain/object"
 	"github.com/roadmap-thesis/backend/internal/io"
+	"github.com/roadmap-thesis/backend/pkg/apperrors"
 )
 
 func (b *backend) GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoadmapOutput, error) {
 	roadmap, err := b.repository.Roadmap.GetBySlug(ctx, slug)
 	if err != nil {
+		if errors.Is(err, domain.ErrRoadmapNotFound) {
+			return io.GetRoadmapOutput{}, apperrors.ResourceNotFound("roadmap")
+		}
 		return io.GetRoadmapOutput{}, err
 	}
 

@@ -31,7 +31,7 @@ func (r *RoadmapRepository) GetBySlug(ctx context.Context, slug string) (domain.
 	}
 
 	if len(roadmaps) == 0 {
-		return domain.Roadmap{}, domain.ErrNotFound
+		return domain.Roadmap{}, domain.ErrRoadmapNotFound
 	}
 
 	roadmap := roadmaps[0]
@@ -95,7 +95,7 @@ func (r *RoadmapRepository) ListByAccountID(ctx context.Context, accountID int) 
 	}
 
 	if len(roadmaps) == 0 {
-		return nil, domain.ErrNotFound
+		return nil, domain.ErrRoadmapNotFound
 	}
 
 	return roadmaps, nil

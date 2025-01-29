@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -15,15 +16,17 @@ func (h *Handler) ErrorHandler(err error, c echo.Context) {
 		return
 	}
 
+	var appErr *apperrors.AppError
+	var httpErr *echo.HTTPError
 	code := http.StatusInternalServerError
-	switch e := err.(type) {
-	case *apperrors.AppError:
-		code = e.Code()
-	case *echo.HTTPError:
-		if e.Code == http.StatusNotFound {
+	switch {
+	case errors.As(err, &appErr):
+		code = appErr.Code()
+	case errors.As(err, &httpErr):
+		if httpErr.Code == http.StatusNotFound {
 			err = apperrors.ResourceNotFound("Path")
 		}
-		code = e.Code
+		code = httpErr.Code
 	}
 
 	var validationErrMsgs []validationErrMsg
