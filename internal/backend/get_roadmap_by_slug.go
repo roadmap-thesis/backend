@@ -71,16 +71,20 @@ func (b *backend) GetRoadmapBySlug(ctx context.Context, slug string) (io.GetRoad
 		topicMap[topic.ParentID] = append(topicMap[topic.ParentID], outputTopic)
 	}
 
-	var buildTopics func(parentID int) []io.GetRoadmapOutputTopics
-	buildTopics = func(parentID int) []io.GetRoadmapOutputTopics {
+	var buildTopics func(ctx context.Context, parentID int) []io.GetRoadmapOutputTopics
+	buildTopics = func(ctx context.Context, parentID int) []io.GetRoadmapOutputTopics {
+		traceCtx, span := tracer.Start(ctx, "buildTopics", trace.WithAttributes(attribute.Int("parentID", parentID)))
+		defer span.End()
+
 		outputTopics := topicMap[parentID]
 		for i := range outputTopics {
-			outputTopics[i].Subtopics = buildTopics(outputTopics[i].ID)
+			outputTopics[i].Subtopics = buildTopics(traceCtx, outputTopics[i].ID)
 		}
+
 		return outputTopics
 	}
 
-	output.Topics = buildTopics(0)
+	output.Topics = buildTopics(ctx, 0)
 
 	return output, nil
 }
